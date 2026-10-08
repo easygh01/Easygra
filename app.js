@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'grajownia-state-v1';
 const STARTING_POINTS = 1000;
 const REWARD_INTERVAL = 60_000;
-const CHEST_INTERVAL = 10 * 60_000;
+const CHEST_INTERVAL = 60_000;
 const CHEST_REWARD = 10_000;
 
 function loadState() {
