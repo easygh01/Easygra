@@ -66,6 +66,13 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid 
 .progress-track span { display: block; width: 0; height: 100%; border-radius: inherit; background: #8db35f; transition: width .4s linear; }
 .next-points { margin: 7px 0 0; color: #8a9186; font-size: 10px; }
 .next-points strong { color: #506658; font-weight: 600; }
+.bonus-chest { margin-top: 12px; padding: 9px 10px 8px; border: 1px solid #e9ddbd; border-radius: 7px; background: linear-gradient(135deg, #fffaf0, #eef0e8 55%, #f4f0df); box-shadow: inset 0 1px rgba(255,255,255,0.7); }
+.bonus-chest-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #7f6e3d; font-size: 8px; font-weight: 700; letter-spacing: 1px; }
+.bonus-chest-value { color: #6a8a4b; }
+.bonus-chest-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 7px; }
+.bonus-chest-row strong { color: #163628; font-family: var(--serif); font-size: 22px; line-height: 1; }
+.bonus-chest-row button { min-height: 32px; padding: 0 12px; border: 1px solid #d8be74; border-radius: 5px; background: linear-gradient(135deg, #f1d58a, #c79e4d); color: #152334; font-size: 10px; font-weight: 700; cursor: pointer; }
+.bonus-chest-row button:disabled { cursor: not-allowed; opacity: .55; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 16px; }
 .section-heading .eyebrow { margin-bottom: 5px; }
 .section-heading h2 { margin: 0; font-family: var(--serif); font-size: 23px; font-weight: 500; letter-spacing: 0; }
@@ -280,6 +287,10 @@ body { background: radial-gradient(ellipse at 72% -18%, #1b2740 0, transparent 4
 .balance-panel { border-color: #a9874c88; background: linear-gradient(145deg, #172138, #10182b); box-shadow: 0 8px 26px #0005, inset 0 1px #ffffff0b; }
 .balance-label, .points-label, .next-points { color: #b7ad98; }
 .coin-icon { border: 1px solid #b18a46; background: #d2ad621c; color: #f2d18a; }
+.bonus-chest { border-color: #7d673d; background: linear-gradient(135deg, rgba(48,35,22,.8), rgba(17,22,35,.8)); box-shadow: inset 0 1px rgba(255,255,255,.06); }
+.bonus-chest-header, .bonus-chest-value { color: #d0b777; }
+.bonus-chest-row strong { color: #f4d899; }
+.bonus-chest-row button { border-color: #d8be74; background: linear-gradient(135deg, #f0d188, #b48337); color: #151d2d; }
 .income-line, .next-points strong { color: #e6c879; }
 .income-line > span:last-child { color: #b3aa98; }
 .progress-track { background: #343a47; }
@@ -597,49 +608,4 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline-color: #f0c
 @media (prefers-reduced-motion: reduce) {
   .win-banner { transition-duration: .01ms; }
   .reel-symbol.is-winning { animation-duration: .01ms; }
-}
-
-.hud-chest { display: grid; grid-template-columns: auto 1fr 68px; align-items: center; gap: 7px; min-width: 205px; margin-left: 7px; padding-left: 11px; border-left: 1px solid #5b5038; }
-.chest-icon { display: grid; width: 27px; aspect-ratio: 1; place-items: center; border: 1px solid #907542; border-radius: 4px; background: linear-gradient(145deg, #332c27, #171d2b); font-size: 15px; }
-.chest-copy { display: grid; gap: 2px; white-space: nowrap; }
-.chest-copy strong { color: #f1d68e; font-size: 7px; letter-spacing: .45px; }
-.chest-copy small { color: #b8ad8f; font-size: 8px; }
-.chest-copy b { color: #fff0bc; font-variant-numeric: tabular-nums; font-weight: 700; }
-.chest-meter { display: block; height: 5px; overflow: hidden; border: 1px solid #594c33; border-radius: 5px; background: #080e1b; }
-.chest-meter > span { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #a77933, #f0d582); box-shadow: 0 0 7px #e3c06a; transition: width .5s linear; }
-.slot-machine.is-classic .reels { height: 140px; }
-.slot-machine.is-classic .reel { grid-template-rows: minmax(0, 1fr); }
-.slot-machine.is-classic .reel-symbol:not(:nth-child(2)) { display: none; }
-.slot-machine.is-classic .reel-symbol:nth-child(2) { border-bottom: 0; font-size: 52px; }
-.slot-machine.is-classic .reel-symbol:nth-child(2).seven-symbol { font-size: 64px; }
-.slot-machine.is-classic .reel-symbol:nth-child(2).bar-symbol { font-size: 30px; }
-.reel.is-spinning .reel-symbol { animation: rolling-symbol .12s linear infinite; will-change: transform, filter; }
-.reel:nth-child(2).is-spinning .reel-symbol { animation-duration: .095s; }
-.reel:nth-child(3).is-spinning .reel-symbol { animation-duration: .075s; }
-.reel.is-spinning .reel-symbol:nth-child(2) { animation-delay: -.04s; }
-.reel.is-spinning .reel-symbol:nth-child(3) { animation-delay: -.08s; }
-@keyframes rolling-symbol { from { transform: translateY(-72%); filter: blur(5px); opacity: .2; } to { transform: translateY(72%); filter: blur(1.4px); opacity: .9; } }
-.reel.is-stopped .reel-symbol { animation: reel-symbol-stop .3s cubic-bezier(.12,.8,.25,1); }
-@keyframes reel-symbol-stop { 0% { transform: translateY(-18%); } 68% { transform: translateY(4%); } 100% { transform: translateY(0); } }
-
-@media (max-width: 680px) {
-  .play-hud { display: grid; grid-template-columns: max-content max-content max-content 1fr; justify-content: stretch; gap: 5px 7px; padding: 7px 9px; }
-  .hud-income { margin-left: 0; padding-left: 7px; }
-  .hud-chest { grid-column: 1 / -1; grid-template-columns: auto minmax(100px, 1fr) minmax(60px, 90px); min-width: 0; margin: 2px 0 0; padding: 6px 0 0; border-top: 1px solid #5b5038; border-left: 0; }
-  .chest-icon { width: 24px; }
-  .slot-machine.is-classic .reels { height: 120px; }
-  .slot-machine.is-classic .reel-symbol:nth-child(2) { font-size: 44px; }
-  .slot-machine.is-classic .reel-symbol:nth-child(2).seven-symbol { font-size: 54px; }
-}
-
-@media (max-width: 380px) {
-  .play-hud { grid-template-columns: max-content max-content max-content 1fr; gap: 5px; }
-  .hud-income { font-size: 8px; }
-  .hud-chest { grid-template-columns: auto minmax(90px, 1fr) minmax(44px, 64px); gap: 5px; }
-  .chest-copy strong { font-size: 6px; }
-  .chest-meter { height: 4px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .reel.is-spinning .reel-symbol, .reel.is-stopped .reel-symbol { animation-duration: .01ms; }
 }

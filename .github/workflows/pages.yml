@@ -1,8 +1,8 @@
-name: Deploy website to GitHub Pages
+name: Deploy static site to Pages
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -11,8 +11,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -23,12 +23,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Configure Pages
+
+      - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Upload site
+
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
-      - name: Deploy
+
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

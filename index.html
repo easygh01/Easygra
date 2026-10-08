@@ -53,7 +53,7 @@
           <div class="welcome-copy">
             <p class="eyebrow">WITAJ W NOCNYM KLUBIE</p>
             <h1 id="welcome-title">Szczęście lubi <em>złoto.</em></h1>
-            <p class="welcome-subtitle">Dziewięć automatów i cztery stoły z grami na wirtualne punkty.</p>
+            <p class="welcome-subtitle">Pięć stołów, wirtualne punkty i wieczór pełen emocji.</p>
           </div>
           <div class="balance-panel" aria-live="polite">
             <div class="balance-topline"><span class="balance-label">TWÓJ PORTFEL</span><span class="coin-icon" aria-hidden="true">✳</span></div>
@@ -61,12 +61,22 @@
             <div class="income-line"><span class="income-dot"></span> +10 pkt <span>co minutę</span></div>
             <div class="progress-track" role="progressbar" aria-label="Postęp do kolejnych punktów" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0"><span id="income-progress"></span></div>
             <p class="next-points">Kolejne punkty za <strong id="countdown">60 s</strong></p>
+            <div class="bonus-chest" aria-live="polite">
+              <div class="bonus-chest-header">
+                <span class="bonus-chest-label">SKRZYNKA BONUSOWA</span>
+                <span class="bonus-chest-value">+ 10 000 pkt</span>
+              </div>
+              <div class="bonus-chest-row">
+                <strong id="chest-countdown">10:00</strong>
+                <button id="claim-chest" type="button" disabled>Odbierz</button>
+              </div>
+            </div>
           </div>
         </section>
 
         <div class="section-heading">
           <div><p class="eyebrow">WYBIERZ SWÓJ STÓŁ</p><h2>Na co masz ochotę?</h2></div>
-          <span class="games-count">09 AUTOMATÓW</span>
+          <span class="games-count">05 GIER</span>
         </div>
 
         <div class="game-tabs" role="tablist" aria-label="Gry">
@@ -82,15 +92,10 @@
           <strong id="table-balance">1 000</strong>
           <span class="hud-points">pkt</span>
           <span class="hud-income"><span class="income-dot"></span> +10 / min</span>
-          <div class="hud-chest" aria-label="Skrzynia online: 10 000 punktów co 10 minut. Postęp naliczany, gdy karta jest aktywna.">
-            <span class="chest-icon" aria-hidden="true">🎁</span>
-            <span class="chest-copy"><strong>SKRZYNIA +10 000</strong><small>online · <b id="chest-countdown">10:00</b></small></span>
-            <span class="chest-meter" role="progressbar" aria-label="Postęp do skrzyni online" aria-valuemin="0" aria-valuemax="600" aria-valuenow="0"><span id="chest-progress"></span></span>
-          </div>
         </div>
 
         <section class="game-panel slot-panel" id="game-slots" role="tabpanel" aria-labelledby="tab-slots" data-panel="slots">
-          <div class="game-intro"><div><span class="game-kicker">01 / AUTOMATY</span><h3 id="slot-title">Lucky 777</h3><p id="slot-subtitle">Klasyczna linia 777 zgarnia 120× stawki.</p></div><span class="game-stamp slot-stamp" id="slot-stamp" aria-hidden="true">777</span></div>
+          <div class="game-intro"><div><span class="game-kicker">01 / AUTOMATY</span><h3 id="slot-title">Lucky 777</h3><p id="slot-subtitle">Klasyczna linia 777 zgarnia 120× stawki.</p></div><span class="game-stamp slot-stamp" aria-hidden="true">777</span></div>
           <div class="slot-collection" role="group" aria-label="Wybierz automat">
             <button class="slot-choice is-selected" type="button" data-slot="sevens" aria-pressed="true"><span class="slot-choice-art">777</span><span class="slot-choice-copy"><strong>Lucky 777</strong><small>777 · 120×</small></span></button>
             <button class="slot-choice" type="button" data-slot="fruits" aria-pressed="false"><span class="slot-choice-art">🍒</span><span class="slot-choice-copy"><strong>Owocowy klub</strong><small>TOP LINIA · 90×</small></span></button>
@@ -98,16 +103,13 @@
             <button class="slot-choice" type="button" data-slot="pharaoh" aria-pressed="false"><span class="slot-choice-art">♜</span><span class="slot-choice-copy"><strong>Skarb faraona</strong><small>TOP LINIA · 120×</small></span></button>
             <button class="slot-choice" type="button" data-slot="midnight" aria-pressed="false"><span class="slot-choice-art">☾</span><span class="slot-choice-copy"><strong>Nocny neon</strong><small>TOP LINIA · 150×</small></span></button>
             <button class="slot-choice" type="button" data-slot="royal" aria-pressed="false"><span class="slot-choice-art">♛</span><span class="slot-choice-copy"><strong>Królewski dzwon</strong><small>TOP LINIA · 120×</small></span></button>
-            <button class="slot-choice three-line-choice" type="button" data-slot="neon3" aria-pressed="false"><span class="slot-choice-art">⚡</span><span class="slot-choice-copy"><strong>Neon 3×3</strong><small>3 LINIE · 3–10×</small></span></button>
-            <button class="slot-choice three-line-choice" type="button" data-slot="treasure3" aria-pressed="false"><span class="slot-choice-art">💰</span><span class="slot-choice-copy"><strong>Skarbiec 3×3</strong><small>3 LINIE · 2–12×</small></span></button>
-            <button class="slot-choice three-line-choice" type="button" data-slot="royal3" aria-pressed="false"><span class="slot-choice-art">👑</span><span class="slot-choice-copy"><strong>Royal 3×3</strong><small>3 LINIE · 3–9×</small></span></button>
           </div>
           <div class="slot-machine" id="slot-machine">
             <div class="machine-top"><span id="machine-name">LUCKY 777</span><span aria-hidden="true">●　●　●</span></div>
             <div class="reels" aria-live="polite" aria-label="Trzy bębny i trzy linie wypłat">
-              <span class="payline payline-top" id="payline-top" aria-hidden="true"><span>1</span></span>
-              <span class="payline payline-middle" id="payline-middle" aria-hidden="true"><span>2</span></span>
-              <span class="payline payline-bottom" id="payline-bottom" aria-hidden="true"><span>3</span></span>
+              <span class="payline payline-top" aria-hidden="true"><span>1</span></span>
+              <span class="payline payline-middle" aria-hidden="true"><span>2</span></span>
+              <span class="payline payline-bottom" aria-hidden="true"><span>3</span></span>
               <div class="reel" id="reel-1"><span class="reel-symbol">7</span><span class="reel-symbol">🍋</span><span class="reel-symbol">🍒</span></div>
               <div class="reel" id="reel-2"><span class="reel-symbol">BAR</span><span class="reel-symbol">7</span><span class="reel-symbol">🔔</span></div>
               <div class="reel" id="reel-3"><span class="reel-symbol">🍒</span><span class="reel-symbol">🍋</span><span class="reel-symbol">7</span></div>
@@ -120,7 +122,7 @@
             <div class="bonus-rule"><span class="scatter-chip">SCATTER</span><span>3× SCATTER = 5 DARMOWYCH SPINÓW</span></div>
           </div>
           <div class="game-controls slot-controls">
-            <label class="stake-control">STAWKA / LINIA <span class="stake-input-wrap"><input id="slot-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><span>pkt</span></span><small class="slot-total-bet"><span id="slot-total-label">SUMA 3 LINII ·</span> <strong id="slot-total-bet">30 pkt</strong></small></label>
+            <label class="stake-control">STAWKA / LINIA <span class="stake-input-wrap"><input id="slot-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><span>pkt</span></span><small class="slot-total-bet">SUMA 3 LINII · <strong id="slot-total-bet">30 pkt</strong></small></label>
             <button class="primary-button slot-spin-button" id="spin-button" type="button"><span aria-hidden="true">↻</span><span id="spin-label">Zakręć</span></button>
           </div>
           <p class="game-message" id="slot-message" aria-live="polite">Wygrywają tylko trójki symboli. Pary nie wypłacają.</p>
