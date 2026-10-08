@@ -97,15 +97,15 @@
         <section class="game-panel slot-panel" id="game-slots" role="tabpanel" aria-labelledby="tab-slots" data-panel="slots">
           <div class="game-intro"><div><span class="game-kicker">01 / AUTOMATY</span><h3 id="slot-title">Lucky 777</h3><p id="slot-subtitle">Klasyczna linia 777 zgarnia 120× stawki.</p></div><span class="game-stamp slot-stamp" aria-hidden="true">777</span></div>
           <div class="slot-collection" role="group" aria-label="Wybierz automat">
-            <button class="slot-choice is-selected" type="button" data-slot="sevens" aria-pressed="true"><span class="slot-choice-art">777</span><span class="slot-choice-copy"><strong>Lucky 777</strong><small>777 · 120×</small></span></button>
-            <button class="slot-choice" type="button" data-slot="fruits" aria-pressed="false"><span class="slot-choice-art">🍒</span><span class="slot-choice-copy"><strong>Owocowy klub</strong><small>TOP LINIA · 90×</small></span></button>
-            <button class="slot-choice" type="button" data-slot="diamonds" aria-pressed="false"><span class="slot-choice-art">♦</span><span class="slot-choice-copy"><strong>Diamentowy</strong><small>TOP LINIA · 120×</small></span></button>
-            <button class="slot-choice" type="button" data-slot="pharaoh" aria-pressed="false"><span class="slot-choice-art">♜</span><span class="slot-choice-copy"><strong>Skarb faraona</strong><small>TOP LINIA · 120×</small></span></button>
-            <button class="slot-choice" type="button" data-slot="midnight" aria-pressed="false"><span class="slot-choice-art">☾</span><span class="slot-choice-copy"><strong>Nocny neon</strong><small>TOP LINIA · 150×</small></span></button>
-            <button class="slot-choice" type="button" data-slot="royal" aria-pressed="false"><span class="slot-choice-art">♛</span><span class="slot-choice-copy"><strong>Królewski dzwon</strong><small>TOP LINIA · 120×</small></span></button>
-            <button class="slot-choice" type="button" data-slot="ocean" aria-pressed="false"><span class="slot-choice-art">🐚</span><span class="slot-choice-copy"><strong>Skarby oceanu</strong><small>3 LINIE · 3×3</small></span></button>
-            <button class="slot-choice" type="button" data-slot="wildwest" aria-pressed="false"><span class="slot-choice-art">♠</span><span class="slot-choice-copy"><strong>Dziki Zachód</strong><small>3 LINIE · 3×3</small></span></button>
-            <button class="slot-choice" type="button" data-slot="cosmos" aria-pressed="false"><span class="slot-choice-art">☄</span><span class="slot-choice-copy"><strong>Kosmiczny jackpot</strong><small>3 LINIE · 3×3</small></span></button>
+            <button class="slot-choice is-selected" type="button" data-slot="sevens" aria-pressed="true"><span class="slot-choice-art" data-slot-symbol="seven"></span><span class="slot-choice-copy"><strong>Lucky 777</strong><small>777 · 120×</small></span></button>
+            <button class="slot-choice" type="button" data-slot="fruits" aria-pressed="false"><span class="slot-choice-art" data-slot-symbol="cherry"></span><span class="slot-choice-copy"><strong>Owocowy klub</strong><small>TOP LINIA · 90×</small></span></button>
+            <button class="slot-choice" type="button" data-slot="diamonds" aria-pressed="false"><span class="slot-choice-art" data-slot-symbol="diamond"></span><span class="slot-choice-copy"><strong>Diamentowy</strong><small>TOP LINIA · 120×</small></span></button>
+            <button class="slot-choice" type="button" data-slot="pharaoh" aria-pressed="false"><span class="slot-choice-art" data-slot-symbol="crown"></span><span class="slot-choice-copy"><strong>Skarb faraona</strong><small>TOP LINIA · 120×</small></span></button>
+            <button class="slot-choice" type="button" data-slot="midnight" aria-pressed="false"><span class="slot-choice-art" data-slot-symbol="moon"></span><span class="slot-choice-copy"><strong>Nocny neon</strong><small>TOP LINIA · 150×</small></span></button>
+            <button class="slot-choice" type="button" data-slot="royal" aria-pressed="false"><span class="slot-choice-art" data-slot-symbol="bell"></span><span class="slot-choice-copy"><strong>Królewski dzwon</strong><small>TOP LINIA · 120×</small></span></button>
+            <button class="slot-choice" type="button" data-slot="ocean" aria-pressed="false"><span class="slot-choice-art" data-slot-symbol="shell"></span><span class="slot-choice-copy"><strong>Skarby oceanu</strong><small>3 LINIE · 3×3</small></span></button>
+            <button class="slot-choice" type="button" data-slot="wildwest" aria-pressed="false"><span class="slot-choice-art" data-slot-symbol="cowboy"></span><span class="slot-choice-copy"><strong>Dziki Zachód</strong><small>3 LINIE · 3×3</small></span></button>
+            <button class="slot-choice" type="button" data-slot="cosmos" aria-pressed="false"><span class="slot-choice-art" data-slot-symbol="comet"></span><span class="slot-choice-copy"><strong>Kosmiczny jackpot</strong><small>3 LINIE · 3×3</small></span></button>
           </div>
           <div class="slot-machine" id="slot-machine">
             <div class="machine-top"><span id="machine-name">LUCKY 777</span><span aria-hidden="true">●　●　●</span></div>
@@ -115,9 +115,9 @@
               <span class="payline payline-bottom" data-payline-id="bottom" aria-hidden="true"><span>3</span></span>
               <span class="payline payline-diagonal-down" data-payline-id="diagonal-down" aria-hidden="true"><span>4</span></span>
               <span class="payline payline-diagonal-up" data-payline-id="diagonal-up" aria-hidden="true"><span>5</span></span>
-              <div class="reel" id="reel-1"><span class="reel-symbol">7</span><span class="reel-symbol">🍋</span><span class="reel-symbol">🍒</span></div>
-              <div class="reel" id="reel-2"><span class="reel-symbol">BAR</span><span class="reel-symbol">7</span><span class="reel-symbol">🔔</span></div>
-              <div class="reel" id="reel-3"><span class="reel-symbol">🍒</span><span class="reel-symbol">🍋</span><span class="reel-symbol">7</span></div>
+              <div class="reel" id="reel-1"><span class="reel-symbol" data-symbol="seven"></span><span class="reel-symbol" data-symbol="lemon"></span><span class="reel-symbol" data-symbol="cherry"></span></div>
+              <div class="reel" id="reel-2"><span class="reel-symbol" data-symbol="bar"></span><span class="reel-symbol" data-symbol="seven"></span><span class="reel-symbol" data-symbol="bell"></span></div>
+              <div class="reel" id="reel-3"><span class="reel-symbol" data-symbol="cherry"></span><span class="reel-symbol" data-symbol="lemon"></span><span class="reel-symbol" data-symbol="seven"></span></div>
             </div>
             <div class="machine-bottom"><span id="machine-prompt">TRAF 777 I ODBIERZ JACKPOT</span><span id="free-spin-counter" aria-live="polite">FREE SPINS · 0</span></div>
           </div>

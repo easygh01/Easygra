@@ -262,21 +262,51 @@ function createSlotGame(title, machine, prompt, reelStrip, payouts, subtitle, ro
     reels: [reelStrip, reelStrip, reelStrip],
     rows,
     payouts,
-    scatterSymbol: 'SCATTER',
+    scatterSymbol: 'scatter',
     freeSpinsAward: 5,
   };
 }
 
+const SLOT_SYMBOLS = {
+  seven: { asset: 'seven', label: 'Siódemka', className: 'seven-symbol' },
+  lemon: { asset: 'lemon', label: 'Cytryna' },
+  orange: { asset: 'orange', label: 'Pomarańcza' },
+  cherry: { asset: 'cherry', label: 'Wiśnie' },
+  bell: { asset: 'bell', label: 'Dzwonek', className: 'bell-symbol' },
+  bar: { asset: 'bar', label: 'BAR', className: 'bar-symbol' },
+  scatter: { asset: 'scatter', label: 'Scatter', className: 'scatter-symbol' },
+  grapes: { asset: 'grapes', label: 'Winogrona' },
+  diamond: { asset: 'diamond', label: 'Diament', className: 'diamond-symbol' },
+  ruby: { asset: 'ruby-diamond', label: 'Rubin', className: 'diamond-symbol' },
+  scarab: { asset: 'scarab', label: 'Skarabeusz' },
+  crown: { asset: 'crown', label: 'Korona' },
+  amphora: { asset: 'amphora', label: 'Amfora' },
+  ring: { asset: 'ring', label: 'Pierścień' },
+  moon: { asset: 'moon', label: 'Księżyc' },
+  lightning: { asset: 'lightning', label: 'Błyskawica' },
+  shell: { asset: 'shell', label: 'Muszla' },
+  fish: { asset: 'fish', label: 'Ryba' },
+  coral: { asset: 'coral', label: 'Koralowiec' },
+  anchor: { asset: 'anchor', label: 'Kotwica' },
+  magnet: { asset: 'magnet', label: 'Magnes' },
+  cowboy: { asset: 'cowboy', label: 'Kapelusz kowbojski' },
+  cactus: { asset: 'cactus', label: 'Kaktus' },
+  star: { asset: 'star', label: 'Gwiazda' },
+  sunstar: { asset: 'sunstar', label: 'Rozbłysk gwiezdny' },
+  planet: { asset: 'planet', label: 'Planeta' },
+  comet: { asset: 'comet', label: 'Kometa' },
+};
+
 const slotGames = {
-  sevens: createSlotGame('Lucky 777', 'LUCKY 777', 'TRAF 777 I ODBIERZ JACKPOT', ['7', '🍋', '🍋', '🍋', '🍊', '🍊', '🍒', '🍒', '🔔', '🔔', 'BAR', 'SCATTER'], { '7': 120, '🍋': 14, '🍊': 20, '🍒': 30, '🔔': 40, BAR: 100 }, 'Klasyczna linia 777 zgarnia 120× stawki.'),
-  fruits: createSlotGame('Owocowy klub', 'FRUIT CLUB', 'OWOCOWA LINIA CZEKA', ['🍒', '🍒', '🍒', '🍋', '🍋', '🍊', '🍊', '🍇', '🍇', 'BAR', '🔔', 'SCATTER'], { '🍒': 14, '🍋': 22, '🍊': 26, '🍇': 36, BAR: 90, '🔔': 60 }, 'Klasyczne owoce i dzwonki. BAR wypłaca 90× stawki.'),
-  diamonds: createSlotGame('Diamentowy', 'DIAMOND VAULT', 'OTWÓRZ DIAMENTOWY SKARBIEC', ['💎', '💎', '♦', '♦', '♦', '7', '7', 'BAR', 'BAR', '🔔', '🍒', 'SCATTER'], { '💎': 28, '♦': 20, '7': 50, BAR: 60, '🔔': 90, '🍒': 100 }, 'Diamenty, siódemki i klasyczne symbole BAR.'),
-  pharaoh: createSlotGame('Skarb faraona', 'PHARAOH GOLD', 'ODKRYJ ZŁOTO FARAONÓW', ['🪲', '🪲', '🪲', '👑', '👑', '🏺', '🏺', '💍', '💍', 'BAR', '7', 'SCATTER'], { '🪲': 12, '👑': 24, '🏺': 32, '💍': 40, BAR: 75, '7': 120 }, 'Symbole skarbu i egipska linia 7 za 120× stawki.'),
-  midnight: createSlotGame('Nocny neon', 'MIDNIGHT NEON', 'ZŁAP NEONOWĄ SERIĘ', ['🌙', '🌙', '🌙', '⚡', '⚡', '💎', '💎', '🔔', '🔔', 'BAR', '7', 'SCATTER'], { '🌙': 14, '⚡': 22, '💎': 30, '🔔': 44, BAR: 90, '7': 150 }, 'Neonowa seria z najwyższą linią 7 za 150×.'),
-  royal: createSlotGame('Królewski dzwon', 'ROYAL BELLS', 'ZAGRAJ O KRÓLEWSKĄ LINIĘ', ['🔔', '🔔', '🔔', '🍒', '🍒', '👑', '👑', '7', '7', 'BAR', '💎', 'SCATTER'], { '🔔': 14, '🍒': 20, '👑': 32, '7': 45, BAR: 100, '💎': 120 }, 'Królewskie symbole, dzwonki i diament za 120×.'),
-  ocean: createSlotGame('Skarby oceanu', 'OCEAN TREASURE', 'ODKRYJ SKARB POD FALAMI', ['🐚', '🐚', '🐚', '🐚', '🐠', '🐠', '🪸', '🪸', '⚓', '🔔', 'BAR', 'SCATTER'], { '🐚': 4, '🐠': 6, '🪸': 8, '⚓': 12, '🔔': 18, BAR: 32 }, 'Trzy linie. Niższe mnożniki i częstsze trafienia.', 3),
-  wildwest: createSlotGame('Dziki Zachód', 'WILD WEST', 'ZŁAP ZŁOTĄ PODKOWĘ', ['🧲', '🧲', '🧲', '🧲', '🤠', '🤠', '🌵', '🌵', '⭐', '🔔', 'BAR', 'SCATTER'], { '🧲': 4, '🤠': 6, '🌵': 8, '⭐': 12, '🔔': 18, BAR: 32 }, 'Trzy linie. Złap cztery częste symbole na linii.', 3),
-  cosmos: createSlotGame('Kosmiczny jackpot', 'COSMIC REELS', 'TRAF GWIEZDNĄ KONIUNKCJĘ', ['🌟', '🌟', '🌟', '🌟', '🪐', '🪐', '☄️', '☄️', '🌙', '💎', 'BAR', 'SCATTER'], { '🌟': 4, '🪐': 6, '☄️': 8, '🌙': 12, '💎': 18, BAR: 32 }, 'Trzy linie i wyższa szansa na wygraną linię.', 3),
+  sevens: createSlotGame('Lucky 777', 'LUCKY 777', 'TRAF 777 I ODBIERZ JACKPOT', ['seven', 'lemon', 'lemon', 'lemon', 'orange', 'orange', 'cherry', 'cherry', 'bell', 'bell', 'bar', 'scatter'], { seven: 120, lemon: 14, orange: 20, cherry: 30, bell: 40, bar: 100 }, 'Klasyczna linia 777 zgarnia 120× stawki.'),
+  fruits: createSlotGame('Owocowy klub', 'FRUIT CLUB', 'OWOCOWA LINIA CZEKA', ['cherry', 'cherry', 'cherry', 'lemon', 'lemon', 'orange', 'orange', 'grapes', 'grapes', 'bar', 'bell', 'scatter'], { cherry: 14, lemon: 22, orange: 26, grapes: 36, bar: 90, bell: 60 }, 'Klasyczne owoce i dzwonki. BAR wypłaca 90× stawki.'),
+  diamonds: createSlotGame('Diamentowy', 'DIAMOND VAULT', 'OTWÓRZ DIAMENTOWY SKARBIEC', ['diamond', 'diamond', 'ruby', 'ruby', 'ruby', 'seven', 'seven', 'bar', 'bar', 'bell', 'cherry', 'scatter'], { diamond: 28, ruby: 20, seven: 50, bar: 60, bell: 90, cherry: 100 }, 'Diamenty, siódemki i klasyczne symbole BAR.'),
+  pharaoh: createSlotGame('Skarb faraona', 'PHARAOH GOLD', 'ODKRYJ ZŁOTO FARAONÓW', ['scarab', 'scarab', 'scarab', 'crown', 'crown', 'amphora', 'amphora', 'ring', 'ring', 'bar', 'seven', 'scatter'], { scarab: 12, crown: 24, amphora: 32, ring: 40, bar: 75, seven: 120 }, 'Symbole skarbu i egipska linia 7 za 120× stawki.'),
+  midnight: createSlotGame('Nocny neon', 'MIDNIGHT NEON', 'ZŁAP NEONOWĄ SERIĘ', ['moon', 'moon', 'moon', 'lightning', 'lightning', 'diamond', 'diamond', 'bell', 'bell', 'bar', 'seven', 'scatter'], { moon: 14, lightning: 22, diamond: 30, bell: 44, bar: 90, seven: 150 }, 'Neonowa seria z najwyższą linią 7 za 150×.'),
+  royal: createSlotGame('Królewski dzwon', 'ROYAL BELLS', 'ZAGRAJ O KRÓLEWSKĄ LINIĘ', ['bell', 'bell', 'bell', 'cherry', 'cherry', 'crown', 'crown', 'seven', 'seven', 'bar', 'diamond', 'scatter'], { bell: 14, cherry: 20, crown: 32, seven: 45, bar: 100, diamond: 120 }, 'Królewskie symbole, dzwonki i diament za 120×.'),
+  ocean: createSlotGame('Skarby oceanu', 'OCEAN TREASURE', 'ODKRYJ SKARB POD FALAMI', ['shell', 'shell', 'shell', 'shell', 'fish', 'fish', 'coral', 'coral', 'anchor', 'bell', 'bar', 'scatter'], { shell: 4, fish: 6, coral: 8, anchor: 12, bell: 18, bar: 32 }, 'Trzy linie. Niższe mnożniki i częstsze trafienia.', 3),
+  wildwest: createSlotGame('Dziki Zachód', 'WILD WEST', 'ZŁAP ZŁOTĄ PODKOWĘ', ['magnet', 'magnet', 'magnet', 'magnet', 'cowboy', 'cowboy', 'cactus', 'cactus', 'star', 'bell', 'bar', 'scatter'], { magnet: 4, cowboy: 6, cactus: 8, star: 12, bell: 18, bar: 32 }, 'Trzy linie. Złap cztery częste symbole na linii.', 3),
+  cosmos: createSlotGame('Kosmiczny jackpot', 'COSMIC REELS', 'TRAF GWIEZDNĄ KONIUNKCJĘ', ['sunstar', 'sunstar', 'sunstar', 'sunstar', 'planet', 'planet', 'comet', 'comet', 'moon', 'diamond', 'bar', 'scatter'], { sunstar: 4, planet: 6, comet: 8, moon: 12, diamond: 18, bar: 32 }, 'Trzy linie i wyższa szansa na wygraną linię.', 3),
 };
 let selectedSlot = 'sevens';
 let slotBusy = false;
@@ -307,13 +337,32 @@ function renderPaylineSelection(game) {
   });
 }
 
+function createSlotIcon(symbol) {
+  const metadata = SLOT_SYMBOLS[symbol];
+  if (!metadata) return null;
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 64 64');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', metadata.label);
+  svg.classList.add('slot-symbol-art');
+  const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  use.setAttribute('href', `slot-symbols.svg#${metadata.asset}`);
+  use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `slot-symbols.svg#${metadata.asset}`);
+  svg.append(use);
+  return svg;
+}
+
 function setReelSymbolStyle(element, symbol) {
-  element.textContent = symbol;
-  element.classList.toggle('seven-symbol', symbol === '7');
-  element.classList.toggle('bar-symbol', symbol === 'BAR');
-  element.classList.toggle('bell-symbol', symbol === '🔔');
-  element.classList.toggle('diamond-symbol', symbol === '♦' || symbol === '💎');
-  element.classList.toggle('scatter-symbol', symbol === 'SCATTER');
+  element.classList.remove('seven-symbol', 'bar-symbol', 'bell-symbol', 'diamond-symbol', 'scatter-symbol');
+  const metadata = SLOT_SYMBOLS[symbol];
+  if (!metadata) {
+    element.textContent = symbol;
+    return;
+  }
+  if (metadata.className) element.classList.add(metadata.className);
+  element.setAttribute('role', 'img');
+  element.setAttribute('aria-label', metadata.label);
+  element.replaceChildren(createSlotIcon(symbol));
 }
 
 function setReelSymbols(reel, symbols) {
@@ -336,7 +385,12 @@ function renderSlotGame(game) {
   document.querySelector('#slot-subtitle').textContent = game.subtitle;
   document.querySelector('#machine-name').textContent = game.machine;
   document.querySelector('#machine-prompt').textContent = game.prompt;
-  document.querySelector('#slot-machine').classList.remove('is-jackpot');
+  const machine = document.querySelector('#slot-machine');
+  machine.classList.remove('is-jackpot');
+  machine.dataset.theme = selectedSlot;
+  document.querySelectorAll('.slot-choice-art').forEach((element) => {
+    element.replaceChildren(createSlotIcon(element.dataset.slotSymbol));
+  });
   const reelsContainer = document.querySelector('.reels');
   reelsContainer.classList.toggle('is-single-row', game.rows === 1);
   renderPaylineSelection(game);
@@ -346,7 +400,8 @@ function renderSlotGame(game) {
     const item = document.createElement('span');
     item.className = 'payout-item';
     const payoutSymbol = document.createElement('strong');
-    payoutSymbol.textContent = symbol;
+    payoutSymbol.className = 'payout-symbol';
+    payoutSymbol.append(createSlotIcon(symbol));
     const payoutValue = document.createElement('small');
     payoutValue.textContent = `${multiplier}×`;
     item.append(payoutSymbol, payoutValue);
@@ -468,7 +523,7 @@ document.querySelector('#spin-button').addEventListener('click', () => {
       winningLines.forEach(({ line }) => {
         document.querySelector(`.payline[data-payline-id="${line.id}"]`).classList.add('is-winning');
       });
-      if (winningLines.some(({ symbol }) => symbol === '7' || symbol === '💎')) machine.classList.add('is-jackpot');
+      if (winningLines.some(({ symbol }) => symbol === 'seven' || symbol === 'diamond')) machine.classList.add('is-jackpot');
     } else if (scatterCount >= 3) {
       setMessage('#slot-message', `BONUS! ${freeSpins} darmowych spinów.`, 'win');
     } else {
