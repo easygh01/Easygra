@@ -609,3 +609,45 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline-color: #f0c
   .win-banner { transition-duration: .01ms; }
   .reel-symbol.is-winning { animation-duration: .01ms; }
 }
+
+.slot-choice:nth-child(7) .slot-choice-art { color: #79c5c7; }
+.slot-choice:nth-child(8) .slot-choice-art { color: #d6a56b; }
+.slot-choice:nth-child(9) .slot-choice-art { color: #aa91e2; }
+.slot-choice:nth-child(n + 7) .slot-choice-copy small { color: #9fc0a4; }
+.reels.is-single-row { height: 128px; }
+.reels.is-single-row .reel { grid-template-rows: minmax(0, 1fr); }
+.reels.is-single-row .reel-symbol { border-bottom: 0; }
+.reels.is-single-row .payline-top, .reels.is-single-row .payline-bottom { display: none; }
+.reels:not(.is-single-row) .payline[hidden] { display: none; }
+.reels.is-spinning { perspective: 420px; }
+.reel { transform-style: preserve-3d; backface-visibility: hidden; }
+.reel.is-spinning { animation: reel-column-roll .13s linear infinite; filter: saturate(.9); }
+.reel:nth-child(2).is-spinning { animation-duration: .105s; }
+.reel:nth-child(3).is-spinning { animation-duration: .085s; }
+.reel.is-stopped { animation: reel-column-stop .3s cubic-bezier(.12,.78,.22,1); }
+@keyframes reel-column-roll {
+  0% { transform: translateY(-9px) rotateX(11deg); filter: blur(2px); }
+  50% { transform: translateY(0) rotateX(0); filter: blur(1px); }
+  100% { transform: translateY(9px) rotateX(-11deg); filter: blur(2px); }
+}
+@keyframes reel-column-stop {
+  0% { transform: translateY(-12px) rotateX(7deg); filter: blur(1px); }
+  72% { transform: translateY(3px) rotateX(-2deg); }
+  100% { transform: translateY(0) rotateX(0); filter: blur(0); }
+}
+.reels.is-spinning .payline::after { opacity: .3; }
+.payline.is-winning::after { animation: payline-flash .4s ease-in-out 3 alternate; }
+@keyframes payline-flash { to { opacity: .65; } }
+.bonus-rule > span:last-child { text-align: center; }
+
+@media (max-width: 680px) {
+  .reels.is-single-row { height: 112px; }
+}
+
+@media (max-width: 380px) {
+  .reels.is-single-row { height: 102px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reel.is-spinning, .reel.is-stopped, .payline.is-winning::after { animation-duration: .01ms; }
+}

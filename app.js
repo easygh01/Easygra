@@ -11,13 +11,13 @@ function loadState() {
       return {
         points: Math.max(0, Math.floor(saved.points)),
         lastRewardAt: saved.lastRewardAt,
-        lastChestAt: Number.isFinite(saved.lastChestAt) ? saved.lastChestAt : Date.now(),
+        chestOnlineMs: Number.isFinite(saved.chestOnlineMs) ? Math.max(0, Math.min(CHEST_INTERVAL, saved.chestOnlineMs)) : 0,
       };
     }
   } catch {
     // Start with a fresh balance if saved browser data is invalid.
   }
-  return { points: STARTING_POINTS, lastRewardAt: Date.now(), lastChestAt: Date.now() };
+  return { points: STARTING_POINTS, lastRewardAt: Date.now(), chestOnlineMs: 0 };
 }
 
 let state = loadState();
@@ -25,6 +25,8 @@ let selectedColor = 'red';
 let blackjack = { active: false, player: [], dealer: [] };
 let toastTimeout;
 let winBannerTimeout;
+let chestLastTickAt = Date.now();
+let chestUnsavedMs = 0;
 
 const balanceElement = document.querySelector('#balance');
 const progressElement = document.querySelector('#income-progress');
@@ -56,7 +58,19 @@ function formatCountdown(ms) {
 function syncChestState() {
   const chestButton = document.querySelector('#claim-chest');
   const chestCountdown = document.querySelector('#chest-countdown');
-  const remaining = CHEST_INTERVAL - (Date.now() - state.lastChestAt);
+  const now = Date.now();
+  const elapsed = Math.max(0, now - chestLastTickAt);
+  chestLastTickAt = now;
+  if (document.visibilityState === 'visible' && state.chestOnlineMs < CHEST_INTERVAL) {
+    const creditedMs = Math.min(elapsed, CHEST_INTERVAL - state.chestOnlineMs);
+    state.chestOnlineMs += creditedMs;
+    chestUnsavedMs += creditedMs;
+    if (chestUnsavedMs >= 5000) {
+      saveState();
+      chestUnsavedMs = 0;
+    }
+  }
+  const remaining = CHEST_INTERVAL - state.chestOnlineMs;
 
   if (remaining <= 0) {
     chestCountdown.textContent = 'GOTOWE';
@@ -71,14 +85,16 @@ function syncChestState() {
 }
 
 function claimChestReward() {
-  const remaining = CHEST_INTERVAL - (Date.now() - state.lastChestAt);
+  const remaining = CHEST_INTERVAL - state.chestOnlineMs;
   if (remaining > 0) {
     showToast('Skrzynka będzie gotowa za kilka minut.');
     return;
   }
 
   state.points += CHEST_REWARD;
-  state.lastChestAt = Date.now();
+  state.chestOnlineMs = 0;
+  chestUnsavedMs = 0;
+  chestLastTickAt = Date.now();
   saveState();
   renderBalance();
   syncChestState();
@@ -134,6 +150,7 @@ document.querySelector('#win-dismiss').addEventListener('click', () => {
 });
 
 document.querySelector('#claim-chest').addEventListener('click', claimChestReward);
+document.addEventListener('visibilitychange', () => { chestLastTickAt = Date.now(); });
 
 function setMessage(selector, message, result = '') {
   const element = document.querySelector(selector);
@@ -170,10 +187,11 @@ function placeBet(stake) {
   renderBalance();
 }
 
-function awardPoints(points) {
+function awardPoints(points, title = 'WYGRANA') {
   state.points += points;
   saveState();
   renderBalance();
+  showWinBanner(title, `+ ${formatPoints(points)}`, 'pkt');
   showWinBanner('WYGRANA', `+ ${formatPoints(points)}`, 'pkt');
 }
 
@@ -197,13 +215,14 @@ document.querySelectorAll('[data-game]').forEach((button) => {
   });
 });
 
-function createSlotGame(title, machine, prompt, reelStrip, payouts, subtitle) {
+function createSlotGame(title, machine, prompt, reelStrip, payouts, subtitle, rows = 1) {
   return {
     title,
     machine,
     prompt,
     subtitle,
     reels: [reelStrip, reelStrip, reelStrip],
+    rows,
     payouts,
     scatterSymbol: 'SCATTER',
     freeSpinsAward: 5,
@@ -217,6 +236,9 @@ const slotGames = {
   pharaoh: createSlotGame('Skarb faraona', 'PHARAOH GOLD', 'ODKRYJ ZŁOTO FARAONÓW', ['🪲', '🪲', '🪲', '👑', '👑', '🏺', '🏺', '💍', '💍', 'BAR', '7', 'SCATTER'], { '🪲': 12, '👑': 24, '🏺': 32, '💍': 40, BAR: 75, '7': 120 }, 'Symbole skarbu i egipska linia 7 za 120× stawki.'),
   midnight: createSlotGame('Nocny neon', 'MIDNIGHT NEON', 'ZŁAP NEONOWĄ SERIĘ', ['🌙', '🌙', '🌙', '⚡', '⚡', '💎', '💎', '🔔', '🔔', 'BAR', '7', 'SCATTER'], { '🌙': 14, '⚡': 22, '💎': 30, '🔔': 44, BAR: 90, '7': 150 }, 'Neonowa seria z najwyższą linią 7 za 150×.'),
   royal: createSlotGame('Królewski dzwon', 'ROYAL BELLS', 'ZAGRAJ O KRÓLEWSKĄ LINIĘ', ['🔔', '🔔', '🔔', '🍒', '🍒', '👑', '👑', '7', '7', 'BAR', '💎', 'SCATTER'], { '🔔': 14, '🍒': 20, '👑': 32, '7': 45, BAR: 100, '💎': 120 }, 'Królewskie symbole, dzwonki i diament za 120×.'),
+  ocean: createSlotGame('Skarby oceanu', 'OCEAN TREASURE', 'ODKRYJ SKARB POD FALAMI', ['🐚', '🐚', '🐚', '🐚', '🐠', '🐠', '🪸', '🪸', '⚓', '🔔', 'BAR', 'SCATTER'], { '🐚': 4, '🐠': 6, '🪸': 8, '⚓': 12, '🔔': 18, BAR: 32 }, 'Trzy linie. Niższe mnożniki i częstsze trafienia.', 3),
+  wildwest: createSlotGame('Dziki Zachód', 'WILD WEST', 'ZŁAP ZŁOTĄ PODKOWĘ', ['🧲', '🧲', '🧲', '🧲', '🤠', '🤠', '🌵', '🌵', '⭐', '🔔', 'BAR', 'SCATTER'], { '🧲': 4, '🤠': 6, '🌵': 8, '⭐': 12, '🔔': 18, BAR: 32 }, 'Trzy linie. Złap cztery częste symbole na linii.', 3),
+  cosmos: createSlotGame('Kosmiczny jackpot', 'COSMIC REELS', 'TRAF GWIEZDNĄ KONIUNKCJĘ', ['🌟', '🌟', '🌟', '🌟', '🪐', '🪐', '☄️', '☄️', '🌙', '💎', 'BAR', 'SCATTER'], { '🌟': 4, '🪐': 6, '☄️': 8, '🌙': 12, '💎': 18, BAR: 32 }, 'Trzy linie i wyższa szansa na wygraną linię.', 3),
 };
 let selectedSlot = 'sevens';
 let slotBusy = false;
@@ -233,7 +255,16 @@ function setReelSymbolStyle(element, symbol) {
 }
 
 function setReelSymbols(reel, symbols) {
-  reel.querySelectorAll('.reel-symbol').forEach((element, index) => {
+  let cells = Array.from(reel.querySelectorAll('.reel-symbol'));
+  if (cells.length !== symbols.length) {
+    reel.replaceChildren(...symbols.map(() => {
+      const element = document.createElement('span');
+      element.className = 'reel-symbol';
+      return element;
+    }));
+    cells = Array.from(reel.querySelectorAll('.reel-symbol'));
+  }
+  cells.forEach((element, index) => {
     setReelSymbolStyle(element, symbols[index]);
   });
 }
@@ -244,6 +275,14 @@ function renderSlotGame(game) {
   document.querySelector('#machine-name').textContent = game.machine;
   document.querySelector('#machine-prompt').textContent = game.prompt;
   document.querySelector('#slot-machine').classList.remove('is-jackpot');
+  const reelsContainer = document.querySelector('.reels');
+  reelsContainer.classList.toggle('is-single-row', game.rows === 1);
+  document.querySelectorAll('.payline').forEach((line, index) => {
+    line.hidden = game.rows === 1 && index !== 1;
+    line.classList.remove('is-winning');
+  });
+  document.querySelector('#slot-stake-label').textContent = game.rows === 1 ? 'STAWKA / SPIN' : 'STAWKA / LINIA';
+  document.querySelector('#slot-total-label').textContent = game.rows === 1 ? 'KOSZT SPINU' : `SUMA ${game.rows} LINII`;
   const payoutList = document.querySelector('#slot-payouts');
   payoutList.replaceChildren(...Object.entries(game.payouts).map(([symbol, multiplier]) => {
     const item = document.createElement('span');
@@ -258,8 +297,9 @@ function renderSlotGame(game) {
   [1, 2, 3].forEach((number) => {
     const reel = document.querySelector(`#reel-${number}`);
     const strip = game.reels[number - 1];
-    setReelSymbols(reel, Array.from({ length: 3 }, () => strip[Math.floor(Math.random() * strip.length)]));
+    setReelSymbols(reel, Array.from({ length: game.rows }, () => strip[Math.floor(Math.random() * strip.length)]));
   });
+  updateSlotTotal();
   setMessage('#slot-message', 'Wygrywają tylko trójki symboli. Pary nie wypłacają.');
 }
 
@@ -292,21 +332,22 @@ document.querySelector('#spin-button').addEventListener('click', () => {
   const isFreeSpin = freeSpins > 0;
   const stake = isFreeSpin ? freeSpinStake : readStake('#slot-stake');
   if (stake === null) return;
-  if (!isFreeSpin && stake * 3 > state.points) {
-    showToast('Za mało punktów na stawkę dla trzech linii.');
+  const game = slotGames[selectedSlot];
+  const spinCost = stake * game.rows;
+  if (!isFreeSpin && spinCost > state.points) {
+    showToast(`Za mało punktów na stawkę ${game.rows} ${game.rows === 1 ? 'linii' : 'linii'}.`);
     return;
   }
   if (isFreeSpin) freeSpins -= 1;
-  else placeBet(stake * 3);
+  else placeBet(spinCost);
   slotBusy = true;
   renderFreeSpins();
-  const game = slotGames[selectedSlot];
   const machine = document.querySelector('#slot-machine');
   machine.classList.remove('is-jackpot');
   const reels = [1, 2, 3].map((number) => document.querySelector(`#reel-${number}`));
   const result = reels.map((reel, index) => {
     const strip = game.reels[index];
-    return Array.from({ length: 3 }, () => strip[Math.floor(Math.random() * strip.length)]);
+    return Array.from({ length: game.rows }, () => strip[Math.floor(Math.random() * strip.length)]);
   });
   const spinIntervals = reels.map((reel, index) => {
     reel.classList.remove('is-stopped', 'is-winning');
@@ -314,7 +355,7 @@ document.querySelector('#spin-button').addEventListener('click', () => {
     reel.classList.add('is-spinning');
     return setInterval(() => {
       const strip = game.reels[index];
-      setReelSymbols(reel, Array.from({ length: 3 }, () => strip[Math.floor(Math.random() * strip.length)]));
+      setReelSymbols(reel, Array.from({ length: game.rows }, () => strip[Math.floor(Math.random() * strip.length)]));
     }, 65 + index * 18);
   });
   const stopDelays = [1050, 1450, 1850];
@@ -329,7 +370,7 @@ document.querySelector('#spin-button').addEventListener('click', () => {
   setMessage('#slot-message', isFreeSpin ? 'Darmowe bębny w ruchu…' : 'Bębny w ruchu…');
   setTimeout(() => {
     const scatterCount = result.flat().filter((symbol) => symbol === game.scatterSymbol).length;
-    const winningLines = [0, 1, 2].flatMap((row) => {
+    const winningLines = Array.from({ length: game.rows }, (_, row) => row).flatMap((row) => {
       const symbol = result[0][row];
       const matchingLine = symbol !== game.scatterSymbol && result.every((reelResult) => reelResult[row] === symbol);
       return matchingLine && game.payouts[symbol] ? [{ row, symbol, multiplier: game.payouts[symbol] }] : [];
@@ -346,9 +387,13 @@ document.querySelector('#spin-button').addEventListener('click', () => {
         reels.forEach((reel) => reel.querySelectorAll('.reel-symbol')[row].classList.add('is-winning'));
       });
       awardPoints(totalPayout);
-      const lineLabels = winningLines.map(({ row }) => row + 1).join(', ');
+      const lineLabels = winningLines.map(({ row }) => game.rows === 1 ? 2 : row + 1).join(', ');
       const bonusMessage = scatterCount >= 3 ? ` · +${game.freeSpinsAward} DARMOWYCH SPINÓW` : '';
       setMessage('#slot-message', `LINIA ${lineLabels} · WYGRANA ${formatPoints(totalPayout)} PKT${bonusMessage}`, 'win');
+      winningLines.forEach(({ row }) => {
+        const lineIndex = game.rows === 1 ? 1 : row;
+        document.querySelectorAll('.payline')[lineIndex].classList.add('is-winning');
+      });
       if (winningLines.some(({ symbol }) => symbol === '7' || symbol === '💎')) machine.classList.add('is-jackpot');
     } else if (scatterCount >= 3) {
       setMessage('#slot-message', `BONUS! ${freeSpins} darmowych spinów.`, 'win');
@@ -362,14 +407,14 @@ document.querySelector('#spin-button').addEventListener('click', () => {
 
 function updateSlotTotal() {
   const stake = Math.floor(Number(document.querySelector('#slot-stake').value));
-  document.querySelector('#slot-total-bet').textContent = Number.isFinite(stake) && stake > 0 ? `${formatPoints(stake * 3)} pkt` : '—';
+  const lineCount = slotGames[selectedSlot].rows;
+  document.querySelector('#slot-total-bet').textContent = Number.isFinite(stake) && stake > 0 ? `${formatPoints(stake * lineCount)} pkt` : '—';
 }
 
 document.querySelector('#slot-stake').addEventListener('input', updateSlotTotal);
 
 renderSlotGame(slotGames[selectedSlot]);
 renderFreeSpins();
-updateSlotTotal();
 updateSlotTotal();
 
 document.querySelectorAll('.color-choice').forEach((button) => {
@@ -453,7 +498,7 @@ function renderBlackjack(hideDealerCard = blackjack.active) {
 
 function finishBlackjack(message, result, payout = 0) {
   blackjack.active = false;
-  if (payout > 0) awardPoints(payout);
+  if (payout > 0) awardPoints(payout, result === 'win' ? 'BLACKJACK' : 'ZWROT STAWKI');
   renderBlackjack(false);
   setMessage('#blackjack-message', message, result);
 }
@@ -573,7 +618,7 @@ document.querySelector('#duel-button').addEventListener('click', () => {
       awardPoints(stake * 2);
       setMessage('#duel-message', `Twoja karta ${player.label} bije ${dealer.label}. Wygrywasz ${formatPoints(stake * 2)} pkt.`, 'win');
     } else if (player.value === dealer.value) {
-      awardPoints(stake);
+      awardPoints(stake, 'ZWROT STAWKI');
       setMessage('#duel-message', `Remis! ${player.label} kontra ${dealer.label}. Stawka wraca do portfela.`);
     } else {
       setMessage('#duel-message', `Krupier ma ${dealer.label}, a Ty ${player.label}. Następna runda?`, 'loss');
