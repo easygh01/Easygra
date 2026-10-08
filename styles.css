@@ -751,3 +751,54 @@ body::before { position: fixed; z-index: -1; inset: 0; background: repeating-lin
   .payline-diagonal-up { transform: rotate(-21deg); }
   .club-panel-heading h2 { font-size: 19px; }
 }
+
+.topbar { position: relative; }
+.profile-dialog { width: min(390px, calc(100vw - 28px)); padding: 23px; border: 1px solid #b79552; border-radius: 7px; background: linear-gradient(145deg, #192239, #0e1525); box-shadow: 0 20px 70px #000b, inset 0 1px #ffffff12; color: #f1e6ce; }
+.profile-dialog::backdrop { background: #050914c9; backdrop-filter: blur(5px); }
+.profile-dialog form { display: grid; gap: 10px; }
+.profile-dialog-heading { display: flex; align-items: start; justify-content: space-between; }
+.profile-dialog-heading .eyebrow { margin: 3px 0 0; }
+.profile-dialog h2 { margin: 0 0 8px; color: #f2e7d1; font-family: var(--serif); font-size: 23px; font-weight: 500; }
+.dialog-close { display: grid; width: 30px; aspect-ratio: 1; place-items: center; border: 1px solid #705e40; border-radius: 50%; background: #121a2c; color: #e6d3a4; font-size: 19px; cursor: pointer; }
+.profile-name-label { color: #b9a879; font-size: 8px; font-weight: 700; letter-spacing: 1px; }
+#profile-name-input { min-height: 43px; padding: 0 11px; border: 1px solid #62583f; border-radius: 4px; background: #0b1221; color: #f4e8cd; }
+.profile-note { margin: 0; color: #a59d8c; font-size: 10px; }
+.profile-save { justify-self: end; margin-top: 5px; }
+.stake-input-wrap { gap: 0; }
+.stake-input-wrap input { flex: 1 1 auto; width: 45px; min-width: 32px; padding: 0 3px; text-align: center; appearance: textfield; }
+.stake-step { display: grid; width: 31px; height: 100%; flex: 0 0 auto; place-items: center; border: 0; background: transparent; color: #d3b86f; font-size: 17px; font-weight: 600; cursor: pointer; }
+.stake-step:hover:not(:disabled) { background: #d2ad6218; color: #fff0b8; }
+.stake-step:disabled { cursor: not-allowed; opacity: .42; }
+.stake-input-wrap > span { padding-right: 7px; }
+.club-board { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); }
+.demo-label.is-online, .ranking-period.is-online { color: #b9d59a; }
+.demo-label.is-online > span { background: #9fca73; box-shadow: 0 0 7px #a6d77b; }
+.chat-panel { display: flex; min-height: 270px; flex-direction: column; }
+.chat-messages { display: flex; min-height: 112px; flex: 1; flex-direction: column; gap: 7px; margin: 0 0 10px; padding: 0; overflow-y: auto; list-style: none; }
+.chat-message { display: grid; gap: 3px; padding: 6px 8px; border-left: 1px solid #9a7e4b; background: #ffffff05; }
+.chat-message strong { color: #e4cb85; font-size: 9px; }
+.chat-message span { overflow-wrap: anywhere; color: #e0d8c6; font-size: 10px; }
+.chat-message time { color: #898372; font-size: 7px; }
+.chat-empty { display: grid; min-height: 100%; place-content: center; color: #979080; font-size: 9px; text-align: center; }
+.chat-form { display: flex; min-width: 0; gap: 5px; }
+.chat-form input { width: 100%; min-width: 0; min-height: 37px; padding: 0 9px; border: 1px solid #4c4d4d; border-radius: 3px; background: #0c1423; color: #f0e5ce; font-size: 10px; }
+.chat-form input:disabled { opacity: .55; }
+.chat-form button { width: 38px; flex: 0 0 auto; border: 1px solid #b18a46; border-radius: 3px; background: linear-gradient(145deg, #e6ca80, #a77c38); color: #161d2a; font-size: 17px; font-weight: 700; cursor: pointer; }
+.chat-form button:disabled { cursor: not-allowed; opacity: .45; }
+.community-alert[hidden] { display: none; }
+.community-alert { position: fixed; z-index: 19; top: 18px; right: 16px; max-width: min(360px, calc(100vw - 32px)); padding: 11px 15px; border: 1px solid #e3bd65; background: linear-gradient(120deg, #432e20, #151d2b 70%); box-shadow: 0 0 20px #e8c25c44, 0 7px 26px #0008; color: #fff0c6; font-size: 11px; animation: community-notice-in .3s ease-out; }
+@keyframes community-notice-in { from { transform: translateY(-8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+
+@media (max-width: 900px) {
+  .club-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chat-panel { grid-column: 1 / -1; min-height: 235px; }
+}
+
+@media (max-width: 680px) {
+  .club-board { grid-template-columns: 1fr; }
+  .chat-panel { grid-column: auto; }
+  .profile-dialog { padding: 19px; }
+  .stake-step { width: 28px; }
+  .community-alert { top: 8px; right: 8px; }
+}

@@ -7,7 +7,9 @@
     <meta name="description" content="Zagraj w automaty, ruletkę i gry stołowe za wirtualne punkty.">
     <title>Grajownia — nocny klub gier</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="community-config.js"></script>
     <script src="app.js" defer></script>
+    <script type="module" src="community.js"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -46,8 +48,18 @@
         <header class="topbar">
           <div class="mobile-brand"><span class="brand-mark" aria-hidden="true">G</span><strong>grajownia<span>.</span></strong></div>
           <div class="topbar-caption"><span class="live-dot"></span> STÓŁ OTWARTY <span class="caption-divider">/</span> TRYB DEMO</div>
-          <button class="profile-button" type="button" aria-label="Profil gracza">G</button>
+          <button class="profile-button" id="profile-toggle" type="button" aria-label="Otwórz profil gracza" aria-haspopup="dialog" aria-expanded="false"><span id="profile-initial">G</span></button>
         </header>
+        <dialog class="profile-dialog" id="profile-dialog" aria-labelledby="profile-title">
+          <form id="profile-form">
+            <div class="profile-dialog-heading"><p class="eyebrow">TWÓJ KLUBOWY PROFIL</p><button class="dialog-close" id="profile-close" type="button" aria-label="Zamknij profil">×</button></div>
+            <h2 id="profile-title">Jak Cię wołają przy stole?</h2>
+            <label class="profile-name-label" for="profile-name-input">NAZWA GRACZA</label>
+            <input id="profile-name-input" name="name" type="text" maxlength="24" autocomplete="nickname" placeholder="np. LuckyMila" required>
+            <p class="profile-note">Ta nazwa pojawi się w rankingu i czacie.</p>
+            <button class="primary-button profile-save" type="submit">Zapisz nazwę</button>
+          </form>
+        </dialog>
 
         <section class="welcome-row" aria-labelledby="welcome-title">
           <div class="welcome-copy">
@@ -136,7 +148,7 @@
             <span class="payline-selector-hint">Każda linia · osobna stawka</span>
           </div>
           <div class="game-controls slot-controls">
-            <label class="stake-control"><span id="slot-stake-label">STAWKA / LINIA</span><span class="stake-input-wrap"><input id="slot-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><span>pkt</span></span><small class="slot-total-bet"><span id="slot-total-label">SUMA 3 LINII</span> · <strong id="slot-total-bet">30 pkt</strong></small></label>
+            <label class="stake-control"><span id="slot-stake-label">STAWKA / LINIA</span><span class="stake-input-wrap"><button class="stake-step" type="button" data-target="slot-stake" data-delta="-10" aria-label="Zmniejsz stawkę">−</button><input id="slot-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><button class="stake-step" type="button" data-target="slot-stake" data-delta="10" aria-label="Zwiększ stawkę">+</button><span>pkt</span></span><small class="slot-total-bet"><span id="slot-total-label">SUMA 3 LINII</span> · <strong id="slot-total-bet">30 pkt</strong></small></label>
             <button class="primary-button slot-spin-button" id="spin-button" type="button"><span aria-hidden="true">↻</span><span id="spin-label">Zakręć</span></button>
           </div>
           <p class="game-message" id="slot-message" aria-live="polite">Wygrywają tylko trójki symboli. Pary nie wypłacają.</p>
@@ -160,7 +172,7 @@
             </div>
           </div>
           <div class="game-controls">
-            <label class="stake-control">STAWKA <span class="stake-input-wrap"><input id="roulette-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><span>pkt</span></span></label>
+            <label class="stake-control">STAWKA <span class="stake-input-wrap"><button class="stake-step" type="button" data-target="roulette-stake" data-delta="-10" aria-label="Zmniejsz stawkę">−</button><input id="roulette-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><button class="stake-step" type="button" data-target="roulette-stake" data-delta="10" aria-label="Zwiększ stawkę">+</button><span>pkt</span></span></label>
             <button class="primary-button" id="roulette-button" type="button"><span aria-hidden="true">↻</span> Zakręć kołem</button>
           </div>
           <p class="game-message" id="roulette-message" aria-live="polite">Czerwony i czarny płacą 2×. Zielone zero płaci 14×.</p>
@@ -174,7 +186,7 @@
             <div class="hand player-hand"><div class="hand-label">TWOJE KARTY <span id="player-total"></span></div><div class="playing-cards" id="player-cards"><span class="playing-card">A♠</span><span class="playing-card red-card">7♥</span></div></div>
           </div>
           <div class="game-controls blackjack-controls">
-            <label class="stake-control">STAWKA <span class="stake-input-wrap"><input id="blackjack-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><span>pkt</span></span></label>
+            <label class="stake-control">STAWKA <span class="stake-input-wrap"><button class="stake-step" type="button" data-target="blackjack-stake" data-delta="-10" aria-label="Zmniejsz stawkę">−</button><input id="blackjack-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><button class="stake-step" type="button" data-target="blackjack-stake" data-delta="10" aria-label="Zwiększ stawkę">+</button><span>pkt</span></span></label>
             <div class="blackjack-actions"><button class="secondary-button" id="hit-button" type="button" disabled>Dobierz</button><button class="secondary-button" id="stand-button" type="button" disabled>Pas</button><button class="primary-button" id="deal-button" type="button">Rozdaj</button></div>
           </div>
           <p class="game-message" id="blackjack-message" aria-live="polite">Rozdaj karty, aby rozpocząć rundę. Wygrana płaci 2× stawkę.</p>
@@ -192,7 +204,7 @@
             <button class="dice-choice" type="button" data-dice="high"><span>Wysoka</span><small>8–12 · 2×</small></button>
           </div>
           <div class="game-controls">
-            <label class="stake-control">STAWKA <span class="stake-input-wrap"><input id="dice-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><span>pkt</span></span></label>
+            <label class="stake-control">STAWKA <span class="stake-input-wrap"><button class="stake-step" type="button" data-target="dice-stake" data-delta="-10" aria-label="Zmniejsz stawkę">−</button><input id="dice-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><button class="stake-step" type="button" data-target="dice-stake" data-delta="10" aria-label="Zwiększ stawkę">+</button><span>pkt</span></span></label>
             <button class="primary-button" id="dice-button" type="button"><span aria-hidden="true">⚄</span> Rzuć kośćmi</button>
           </div>
           <p class="game-message" id="dice-message" aria-live="polite">Wybierz wynik i sprawdź swoje szczęście.</p>
@@ -206,7 +218,7 @@
             <div class="duel-side"><span class="duel-label">KRUPIER</span><span class="playing-card card-back duel-card" id="duel-dealer-card">✳</span></div>
           </div>
           <div class="game-controls">
-            <label class="stake-control">STAWKA <span class="stake-input-wrap"><input id="duel-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><span>pkt</span></span></label>
+            <label class="stake-control">STAWKA <span class="stake-input-wrap"><button class="stake-step" type="button" data-target="duel-stake" data-delta="-10" aria-label="Zmniejsz stawkę">−</button><input id="duel-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><button class="stake-step" type="button" data-target="duel-stake" data-delta="10" aria-label="Zwiększ stawkę">+</button><span>pkt</span></span></label>
             <button class="primary-button" id="duel-button" type="button"><span aria-hidden="true">♦</span> Odkryj karty</button>
           </div>
           <p class="game-message" id="duel-message" aria-live="polite">Wyższa karta wygrywa 2× stawkę. As jest najwyższy.</p>
@@ -216,10 +228,10 @@
           <article class="club-panel wins-panel">
             <div class="club-panel-heading">
               <div><p class="eyebrow">NA STOŁACH GRAJOWNI</p><h2>Duże trafienia</h2></div>
-              <span class="demo-label"><span></span> DEMO</span>
+              <span class="demo-label" id="community-status"><span></span> ŁĄCZENIE…</span>
             </div>
-            <p class="club-panel-description">Przykładowe wygrane w trybie demonstracyjnym.</p>
-            <ul class="big-wins-list" aria-label="Przykładowe duże wygrane">
+            <p class="club-panel-description" id="big-wins-help">Przykładowe wygrane w trybie demonstracyjnym.</p>
+            <ul class="big-wins-list" id="big-wins-list" aria-label="Duże wygrane społeczności">
               <li><span class="win-game-icon">777</span><span class="win-player"><strong>RoyalMila</strong><small>Lucky 777 · przed chwilą</small></span><span class="win-amount">+ 12 400</span></li>
               <li><span class="win-game-icon">♦</span><span class="win-player"><strong>NeonFox</strong><small>Diamentowy · 3 min temu</small></span><span class="win-amount">+ 8 650</span></li>
               <li><span class="win-game-icon">♛</span><span class="win-player"><strong>ZlotaKarta</strong><small>Blackjack · 8 min temu</small></span><span class="win-amount">+ 5 200</span></li>
@@ -228,10 +240,23 @@
           <article class="club-panel ranking-panel">
             <div class="club-panel-heading">
               <div><p class="eyebrow">PUNKTY WIRTUALNE</p><h2>Ranking klubu</h2></div>
-              <span class="ranking-period">DZISIAJ</span>
+              <span class="ranking-period" id="ranking-status">DEMO</span>
             </div>
             <p class="club-panel-description">Przykładowi gracze i Twoje aktualne saldo.</p>
             <ol class="leaderboard-list" id="leaderboard-list" aria-label="Ranking graczy"></ol>
+          </article>
+          <article class="club-panel chat-panel">
+            <div class="club-panel-heading">
+              <div><p class="eyebrow">PRZY STOLE</p><h2>Czat graczy</h2></div>
+              <span class="ranking-period" id="chat-connection">OFFLINE</span>
+            </div>
+            <p class="club-panel-description" id="chat-help">Wspólny czat wymaga połączenia społeczności.</p>
+            <ol class="chat-messages" id="chat-messages" aria-live="polite" aria-label="Wiadomości czatu"></ol>
+            <form class="chat-form" id="chat-form">
+              <label class="visually-hidden" for="chat-input">Wiadomość na czacie</label>
+              <input id="chat-input" type="text" maxlength="300" placeholder="Napisz wiadomość…" autocomplete="off" disabled>
+              <button type="submit" id="chat-send" aria-label="Wyślij wiadomość" disabled>↗</button>
+            </form>
           </article>
         </section>
 
@@ -243,6 +268,7 @@
       <span class="win-banner-copy"><small id="win-title">WYGRANA</small><strong><span id="win-value">+ 0</span> <span id="win-unit">pkt</span></strong></span>
       <button class="win-banner-close" id="win-dismiss" type="button" aria-label="Zamknij komunikat o wygranej">×</button>
     </div>
+    <div class="community-alert" id="community-alert" role="status" aria-live="polite" hidden></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </body>
 </html>

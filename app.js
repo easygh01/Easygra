@@ -12,12 +12,13 @@ function loadState() {
         points: Math.max(0, Math.floor(saved.points)),
         lastRewardAt: saved.lastRewardAt,
         chestOnlineMs: Number.isFinite(saved.chestOnlineMs) ? Math.max(0, Math.min(CHEST_INTERVAL, saved.chestOnlineMs)) : 0,
+        playerName: typeof saved.playerName === 'string' ? saved.playerName.slice(0, 24) : '',
       };
     }
   } catch {
     // Start with a fresh balance if saved browser data is invalid.
   }
-  return { points: STARTING_POINTS, lastRewardAt: Date.now(), chestOnlineMs: 0 };
+  return { points: STARTING_POINTS, lastRewardAt: Date.now(), chestOnlineMs: 0, playerName: '' };
 }
 
 let state = loadState();
@@ -54,6 +55,9 @@ const winBanner = document.querySelector('#win-banner');
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  window.dispatchEvent(new CustomEvent('grajownia:state', {
+    detail: { playerName: state.playerName || 'Gość', points: state.points },
+  }));
 }
 
 function formatPoints(points) {
@@ -67,6 +71,7 @@ function renderBalance() {
 }
 
 function renderLeaderboard() {
+  if (window.grajowniaCommunity?.connected) return;
   const players = [...DEMO_PLAYERS, { name: 'Ty', points: state.points, isPlayer: true }]
     .sort((first, second) => second.points - first.points)
     .slice(0, 5);
@@ -78,7 +83,7 @@ function renderLeaderboard() {
     rank.className = 'leaderboard-rank';
     rank.textContent = String(index + 1).padStart(2, '0');
     const name = document.createElement('strong');
-    name.textContent = player.name;
+    name.textContent = player.isPlayer ? (state.playerName || 'Gość') : player.name;
     const points = document.createElement('span');
     points.className = 'leaderboard-points';
     points.textContent = `${formatPoints(player.points)} pkt`;
@@ -139,6 +144,7 @@ function claimChestReward() {
   syncChestState();
   showWinBanner('SKRZYNKA BONUSOWA', `+ ${formatPoints(CHEST_REWARD)}`, 'pkt');
   showToast('Skrzynka otwarta! +10 000 pkt');
+  announceBigWin(CHEST_REWARD, 'Skrzynka bonusowa');
 }
 
 function syncIncome() {
@@ -188,6 +194,54 @@ document.querySelector('#win-dismiss').addEventListener('click', () => {
   setTimeout(() => { winBanner.hidden = true; }, 300);
 });
 
+const profileDialog = document.querySelector('#profile-dialog');
+const profileInput = document.querySelector('#profile-name-input');
+const profileToggle = document.querySelector('#profile-toggle');
+
+function renderProfile() {
+  const playerName = state.playerName || 'Gość';
+  document.querySelector('#profile-initial').textContent = playerName.slice(0, 1).toLocaleUpperCase('pl-PL');
+  profileInput.value = state.playerName;
+  renderLeaderboard();
+}
+
+profileToggle.addEventListener('click', () => {
+  profileInput.value = state.playerName;
+  profileDialog.showModal();
+  profileToggle.setAttribute('aria-expanded', 'true');
+  profileInput.focus();
+});
+
+document.querySelector('#profile-close').addEventListener('click', () => profileDialog.close());
+profileDialog.addEventListener('close', () => profileToggle.setAttribute('aria-expanded', 'false'));
+document.querySelector('#profile-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const playerName = profileInput.value.trim().replace(/\s+/g, ' ').slice(0, 24);
+  if (!playerName) {
+    profileInput.focus();
+    return;
+  }
+  state.playerName = playerName;
+  saveState();
+  renderProfile();
+  profileDialog.close();
+  showToast(`Grasz jako ${playerName}`);
+});
+
+document.querySelectorAll('.stake-step').forEach((button) => {
+  button.addEventListener('click', () => {
+    const input = document.querySelector(`#${button.dataset.target}`);
+    if (input.disabled) return;
+    const min = Number(input.min) || 10;
+    const max = Number(input.max) || 500;
+    const step = Number(input.step) || 10;
+    const current = Number(input.value) || min;
+    input.value = String(Math.min(max, Math.max(min, current + Number(button.dataset.delta))));
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+});
+
 document.querySelector('#claim-chest').addEventListener('click', claimChestReward);
 document.addEventListener('visibilitychange', () => { chestLastTickAt = Date.now(); });
 
@@ -226,11 +280,19 @@ function placeBet(stake) {
   renderBalance();
 }
 
+function announceBigWin(points, title) {
+  if (points <= 1000) return;
+  window.dispatchEvent(new CustomEvent('grajownia:big-win', {
+    detail: { playerName: state.playerName || 'Gość', points, title },
+  }));
+}
+
 function awardPoints(points, title = 'WYGRANA') {
   state.points += points;
   saveState();
   renderBalance();
   showWinBanner(title, `+ ${formatPoints(points)}`, 'pkt');
+  announceBigWin(points, title);
 }
 
 document.querySelectorAll('[data-game]').forEach((button) => {
@@ -761,6 +823,7 @@ document.querySelector('#duel-button').addEventListener('click', () => {
 });
 
 renderBalance();
+renderProfile();
 renderBlackjack(false);
 syncIncome();
 setInterval(syncIncome, 1000);
