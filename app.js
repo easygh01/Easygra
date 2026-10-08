@@ -27,6 +27,23 @@ let toastTimeout;
 let winBannerTimeout;
 let chestLastTickAt = Date.now();
 let chestUnsavedMs = 0;
+let selectedPaylineCount = 3;
+let freeSpinLineCount = 3;
+
+const DEMO_PLAYERS = [
+  { name: 'RoyalMila', points: 128_400 },
+  { name: 'NeonFox', points: 84_250 },
+  { name: 'ZlotaKarta', points: 52_800 },
+  { name: 'LuckyBartek', points: 31_600 },
+];
+
+const PAYLINE_DEFINITIONS = [
+  { index: 0, id: 'top', name: '1', positions: [0, 0, 0] },
+  { index: 1, id: 'middle', name: '2', positions: [1, 1, 1] },
+  { index: 2, id: 'bottom', name: '3', positions: [2, 2, 2] },
+  { index: 3, id: 'diagonal-down', name: '4', positions: [0, 1, 2] },
+  { index: 4, id: 'diagonal-up', name: '5', positions: [2, 1, 0] },
+];
 
 const balanceElement = document.querySelector('#balance');
 const progressElement = document.querySelector('#income-progress');
@@ -46,6 +63,28 @@ function formatPoints(points) {
 function renderBalance() {
   balanceElement.textContent = formatPoints(state.points);
   document.querySelector('#table-balance').textContent = formatPoints(state.points);
+  renderLeaderboard();
+}
+
+function renderLeaderboard() {
+  const players = [...DEMO_PLAYERS, { name: 'Ty', points: state.points, isPlayer: true }]
+    .sort((first, second) => second.points - first.points)
+    .slice(0, 5);
+  const list = document.querySelector('#leaderboard-list');
+  list.replaceChildren(...players.map((player, index) => {
+    const row = document.createElement('li');
+    row.className = `leaderboard-entry${player.isPlayer ? ' is-player' : ''}`;
+    const rank = document.createElement('span');
+    rank.className = 'leaderboard-rank';
+    rank.textContent = String(index + 1).padStart(2, '0');
+    const name = document.createElement('strong');
+    name.textContent = player.name;
+    const points = document.createElement('span');
+    points.className = 'leaderboard-points';
+    points.textContent = `${formatPoints(player.points)} pkt`;
+    row.append(rank, name, points);
+    return row;
+  }));
 }
 
 function formatCountdown(ms) {
@@ -192,7 +231,6 @@ function awardPoints(points, title = 'WYGRANA') {
   saveState();
   renderBalance();
   showWinBanner(title, `+ ${formatPoints(points)}`, 'pkt');
-  showWinBanner('WYGRANA', `+ ${formatPoints(points)}`, 'pkt');
 }
 
 document.querySelectorAll('[data-game]').forEach((button) => {
@@ -245,6 +283,30 @@ let slotBusy = false;
 let freeSpins = 0;
 let freeSpinStake = 0;
 
+function getActivePaylines(game, lineCount = selectedPaylineCount) {
+  if (game.rows === 1) {
+    return [{ ...PAYLINE_DEFINITIONS[1], positions: [0, 0, 0] }];
+  }
+  if (lineCount === 1) return [PAYLINE_DEFINITIONS[1]];
+  return PAYLINE_DEFINITIONS.slice(0, lineCount === 3 ? 3 : 5);
+}
+
+function renderPaylineSelection(game) {
+  const selector = document.querySelector('#payline-selector');
+  selector.hidden = game.rows === 1;
+  const activePaylineIds = new Set(getActivePaylines(game).map((line) => line.id));
+  document.querySelectorAll('.payline').forEach((line) => {
+    line.hidden = !activePaylineIds.has(line.dataset.paylineId);
+    line.classList.remove('is-winning');
+  });
+  document.querySelectorAll('.line-option').forEach((button) => {
+    const selected = Number(button.dataset.lines) === selectedPaylineCount;
+    button.classList.toggle('is-selected', selected);
+    button.setAttribute('aria-pressed', String(selected));
+    button.disabled = game.rows === 1 || slotBusy || freeSpins > 0;
+  });
+}
+
 function setReelSymbolStyle(element, symbol) {
   element.textContent = symbol;
   element.classList.toggle('seven-symbol', symbol === '7');
@@ -277,12 +339,8 @@ function renderSlotGame(game) {
   document.querySelector('#slot-machine').classList.remove('is-jackpot');
   const reelsContainer = document.querySelector('.reels');
   reelsContainer.classList.toggle('is-single-row', game.rows === 1);
-  document.querySelectorAll('.payline').forEach((line, index) => {
-    line.hidden = game.rows === 1 && index !== 1;
-    line.classList.remove('is-winning');
-  });
+  renderPaylineSelection(game);
   document.querySelector('#slot-stake-label').textContent = game.rows === 1 ? 'STAWKA / SPIN' : 'STAWKA / LINIA';
-  document.querySelector('#slot-total-label').textContent = game.rows === 1 ? 'KOSZT SPINU' : `SUMA ${game.rows} LINII`;
   const payoutList = document.querySelector('#slot-payouts');
   payoutList.replaceChildren(...Object.entries(game.payouts).map(([symbol, multiplier]) => {
     const item = document.createElement('span');
@@ -308,6 +366,7 @@ function renderFreeSpins() {
   document.querySelector('#spin-label').textContent = freeSpins > 0 ? 'Darmowy spin' : 'Zakręć';
   document.querySelector('#slot-stake').disabled = slotBusy || freeSpins > 0;
   document.querySelector('#spin-button').disabled = slotBusy;
+  renderPaylineSelection(slotGames[selectedSlot]);
   document.querySelectorAll('.slot-choice').forEach((choice) => {
     choice.disabled = slotBusy || (freeSpins > 0 && choice.dataset.slot !== selectedSlot);
   });
@@ -327,15 +386,25 @@ document.querySelectorAll('.slot-choice').forEach((button) => {
   });
 });
 
+document.querySelectorAll('.line-option').forEach((button) => {
+  button.addEventListener('click', () => {
+    if (slotBusy || freeSpins > 0) return;
+    selectedPaylineCount = Number(button.dataset.lines);
+    renderPaylineSelection(slotGames[selectedSlot]);
+    updateSlotTotal();
+  });
+});
+
 document.querySelector('#spin-button').addEventListener('click', () => {
   if (slotBusy) return;
   const isFreeSpin = freeSpins > 0;
   const stake = isFreeSpin ? freeSpinStake : readStake('#slot-stake');
   if (stake === null) return;
   const game = slotGames[selectedSlot];
-  const spinCost = stake * game.rows;
+  const lineCount = isFreeSpin ? freeSpinLineCount : game.rows === 1 ? 1 : selectedPaylineCount;
+  const spinCost = stake * lineCount;
   if (!isFreeSpin && spinCost > state.points) {
-    showToast(`Za mało punktów na stawkę ${game.rows} ${game.rows === 1 ? 'linii' : 'linii'}.`);
+    showToast(`Za mało punktów. Ten spin kosztuje ${formatPoints(spinCost)} pkt.`);
     return;
   }
   if (isFreeSpin) freeSpins -= 1;
@@ -370,35 +439,40 @@ document.querySelector('#spin-button').addEventListener('click', () => {
   setMessage('#slot-message', isFreeSpin ? 'Darmowe bębny w ruchu…' : 'Bębny w ruchu…');
   setTimeout(() => {
     const scatterCount = result.flat().filter((symbol) => symbol === game.scatterSymbol).length;
-    const winningLines = Array.from({ length: game.rows }, (_, row) => row).flatMap((row) => {
-      const symbol = result[0][row];
-      const matchingLine = symbol !== game.scatterSymbol && result.every((reelResult) => reelResult[row] === symbol);
-      return matchingLine && game.payouts[symbol] ? [{ row, symbol, multiplier: game.payouts[symbol] }] : [];
+    const winningLines = getActivePaylines(game, lineCount).flatMap((line) => {
+      const symbols = line.positions.map((row, reelIndex) => result[reelIndex][row]);
+      const symbol = symbols[0];
+      const matchingLine = symbol !== game.scatterSymbol && symbols.every((lineSymbol) => lineSymbol === symbol);
+      return matchingLine && game.payouts[symbol] ? [{ line, symbol, multiplier: game.payouts[symbol] }] : [];
     });
     const totalPayout = stake * winningLines.reduce((total, line) => total + line.multiplier, 0);
 
     if (scatterCount >= 3) {
-      if (!isFreeSpin) freeSpinStake = stake;
+      if (!isFreeSpin) {
+        freeSpinStake = stake;
+        freeSpinLineCount = lineCount;
+      }
       freeSpins += game.freeSpinsAward;
       if (totalPayout === 0) showWinBanner('BONUS SCATTER', `+ ${game.freeSpinsAward}`, 'DARMOWYCH SPINÓW');
     }
     if (totalPayout > 0) {
-      winningLines.forEach(({ row }) => {
-        reels.forEach((reel) => reel.querySelectorAll('.reel-symbol')[row].classList.add('is-winning'));
+      winningLines.forEach(({ line }) => {
+        line.positions.forEach((row, reelIndex) => {
+          reels[reelIndex].querySelectorAll('.reel-symbol')[row].classList.add('is-winning');
+        });
       });
-      awardPoints(totalPayout);
-      const lineLabels = winningLines.map(({ row }) => game.rows === 1 ? 2 : row + 1).join(', ');
+      const lineLabels = winningLines.map(({ line }) => line.name).join(', ');
+      awardPoints(totalPayout, `WYGRANA · LINIE ${lineLabels}`);
       const bonusMessage = scatterCount >= 3 ? ` · +${game.freeSpinsAward} DARMOWYCH SPINÓW` : '';
       setMessage('#slot-message', `LINIA ${lineLabels} · WYGRANA ${formatPoints(totalPayout)} PKT${bonusMessage}`, 'win');
-      winningLines.forEach(({ row }) => {
-        const lineIndex = game.rows === 1 ? 1 : row;
-        document.querySelectorAll('.payline')[lineIndex].classList.add('is-winning');
+      winningLines.forEach(({ line }) => {
+        document.querySelector(`.payline[data-payline-id="${line.id}"]`).classList.add('is-winning');
       });
       if (winningLines.some(({ symbol }) => symbol === '7' || symbol === '💎')) machine.classList.add('is-jackpot');
     } else if (scatterCount >= 3) {
       setMessage('#slot-message', `BONUS! ${freeSpins} darmowych spinów.`, 'win');
     } else {
-      setMessage('#slot-message', isFreeSpin ? 'Darmowy spin bez wygranej. Bonus trwa dalej.' : 'Brak wygranej na 3 liniach. Następny spin?');
+      setMessage('#slot-message', isFreeSpin ? 'Darmowy spin bez wygranej. Bonus trwa dalej.' : `Brak trafienia na ${lineCount} ${lineCount === 1 ? 'linii' : 'liniach'}. Następny spin?`);
     }
     slotBusy = false;
     renderFreeSpins();
@@ -407,7 +481,10 @@ document.querySelector('#spin-button').addEventListener('click', () => {
 
 function updateSlotTotal() {
   const stake = Math.floor(Number(document.querySelector('#slot-stake').value));
-  const lineCount = slotGames[selectedSlot].rows;
+  const game = slotGames[selectedSlot];
+  const lineCount = game.rows === 1 ? 1 : (freeSpins > 0 ? freeSpinLineCount : selectedPaylineCount);
+  const lineUnit = lineCount === 1 ? 'LINIA' : 'LINII';
+  document.querySelector('#slot-total-label').textContent = game.rows === 1 ? 'KOSZT SPINU' : `SUMA ${lineCount} ${lineUnit}`;
   document.querySelector('#slot-total-bet').textContent = Number.isFinite(stake) && stake > 0 ? `${formatPoints(stake * lineCount)} pkt` : '—';
 }
 

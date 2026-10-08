@@ -110,9 +110,11 @@
           <div class="slot-machine" id="slot-machine">
             <div class="machine-top"><span id="machine-name">LUCKY 777</span><span aria-hidden="true">●　●　●</span></div>
             <div class="reels" aria-live="polite" aria-label="Trzy bębny i trzy linie wypłat">
-              <span class="payline payline-top" aria-hidden="true"><span>1</span></span>
-              <span class="payline payline-middle" aria-hidden="true"><span>2</span></span>
-              <span class="payline payline-bottom" aria-hidden="true"><span>3</span></span>
+              <span class="payline payline-top" data-payline-id="top" aria-hidden="true"><span>1</span></span>
+              <span class="payline payline-middle" data-payline-id="middle" aria-hidden="true"><span>2</span></span>
+              <span class="payline payline-bottom" data-payline-id="bottom" aria-hidden="true"><span>3</span></span>
+              <span class="payline payline-diagonal-down" data-payline-id="diagonal-down" aria-hidden="true"><span>4</span></span>
+              <span class="payline payline-diagonal-up" data-payline-id="diagonal-up" aria-hidden="true"><span>5</span></span>
               <div class="reel" id="reel-1"><span class="reel-symbol">7</span><span class="reel-symbol">🍋</span><span class="reel-symbol">🍒</span></div>
               <div class="reel" id="reel-2"><span class="reel-symbol">BAR</span><span class="reel-symbol">7</span><span class="reel-symbol">🔔</span></div>
               <div class="reel" id="reel-3"><span class="reel-symbol">🍒</span><span class="reel-symbol">🍋</span><span class="reel-symbol">7</span></div>
@@ -123,6 +125,15 @@
             <div class="paytable-heading"><span>3 SYMBOLE NA LINII</span><span>WYPŁATA</span></div>
             <div class="paytable-payouts" id="slot-payouts" aria-label="Tabela wypłat"></div>
             <div class="bonus-rule"><span class="scatter-chip">SCATTER</span><span>3× SCATTER = 5 DARMOWYCH SPINÓW</span></div>
+          </div>
+          <div class="payline-selector" id="payline-selector" role="group" aria-label="Wybierz aktywne linie wypłat">
+            <span class="payline-selector-label">AKTYWNE LINIE</span>
+            <div class="line-options">
+              <button class="line-option" type="button" data-lines="1" aria-pressed="false">1</button>
+              <button class="line-option is-selected" type="button" data-lines="3" aria-pressed="true">3</button>
+              <button class="line-option" type="button" data-lines="5" aria-pressed="false">5</button>
+            </div>
+            <span class="payline-selector-hint">Każda linia · osobna stawka</span>
           </div>
           <div class="game-controls slot-controls">
             <label class="stake-control"><span id="slot-stake-label">STAWKA / LINIA</span><span class="stake-input-wrap"><input id="slot-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><span>pkt</span></span><small class="slot-total-bet"><span id="slot-total-label">SUMA 3 LINII</span> · <strong id="slot-total-bet">30 pkt</strong></small></label>
@@ -199,6 +210,29 @@
             <button class="primary-button" id="duel-button" type="button"><span aria-hidden="true">♦</span> Odkryj karty</button>
           </div>
           <p class="game-message" id="duel-message" aria-live="polite">Wyższa karta wygrywa 2× stawkę. As jest najwyższy.</p>
+        </section>
+
+        <section class="club-board" aria-label="Ranking i duże wygrane">
+          <article class="club-panel wins-panel">
+            <div class="club-panel-heading">
+              <div><p class="eyebrow">NA STOŁACH GRAJOWNI</p><h2>Duże trafienia</h2></div>
+              <span class="demo-label"><span></span> DEMO</span>
+            </div>
+            <p class="club-panel-description">Przykładowe wygrane w trybie demonstracyjnym.</p>
+            <ul class="big-wins-list" aria-label="Przykładowe duże wygrane">
+              <li><span class="win-game-icon">777</span><span class="win-player"><strong>RoyalMila</strong><small>Lucky 777 · przed chwilą</small></span><span class="win-amount">+ 12 400</span></li>
+              <li><span class="win-game-icon">♦</span><span class="win-player"><strong>NeonFox</strong><small>Diamentowy · 3 min temu</small></span><span class="win-amount">+ 8 650</span></li>
+              <li><span class="win-game-icon">♛</span><span class="win-player"><strong>ZlotaKarta</strong><small>Blackjack · 8 min temu</small></span><span class="win-amount">+ 5 200</span></li>
+            </ul>
+          </article>
+          <article class="club-panel ranking-panel">
+            <div class="club-panel-heading">
+              <div><p class="eyebrow">PUNKTY WIRTUALNE</p><h2>Ranking klubu</h2></div>
+              <span class="ranking-period">DZISIAJ</span>
+            </div>
+            <p class="club-panel-description">Przykładowi gracze i Twoje aktualne saldo.</p>
+            <ol class="leaderboard-list" id="leaderboard-list" aria-label="Ranking graczy"></ol>
+          </article>
         </section>
 
         <footer class="page-footer"><span>GRAJOWNIA © 2026</span><span>WIRTUALNE PUNKTY · ZERO WPŁAT · ZERO WYPŁAT</span></footer>
