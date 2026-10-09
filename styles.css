@@ -505,6 +505,8 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline-color: #f0c
 .slot-choice:nth-child(4) .slot-choice-art, .slot-choice:nth-child(5) .slot-choice-art, .slot-choice:nth-child(6) .slot-choice-art { color: #e9c879; font-family: var(--serif); font-size: 21px; }
 .slot-choice.is-selected .slot-choice-art { border-color: #f0d58e; box-shadow: 0 0 10px #e8c76a3c; }
 .slot-paytable { width: min(100%, 540px); margin: 0 auto 16px; padding: 9px 11px 8px; border-top: 1px solid #a7864969; border-bottom: 1px solid #a7864969; background: linear-gradient(100deg, #0e1525, #171d2b 50%, #0e1525); }
+.payout-note { margin: -8px auto 14px; color: #a99d83; font-size: 8px; text-align: center; }
+.payout-note { margin: -8px auto 14px; color: #a99d83; font-size: 8px; text-align: center; }
 .paytable-heading { display: flex; justify-content: space-between; margin-bottom: 7px; color: #bba978; font-size: 7px; font-weight: 700; letter-spacing: 1px; }
 .paytable-payouts { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px; }
 .payout-item { display: flex; min-width: 0; min-height: 39px; align-items: center; justify-content: center; gap: 5px; border: 1px solid #55503f; background: #111827; }

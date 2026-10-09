@@ -134,10 +134,12 @@
             <div class="machine-bottom"><span id="machine-prompt">TRAF 777 I ODBIERZ JACKPOT</span><span id="free-spin-counter" aria-live="polite">FREE SPINS · 0</span></div>
           </div>
           <div class="slot-paytable">
-            <div class="paytable-heading"><span>3 SYMBOLE NA LINII</span><span>WYPŁATA</span></div>
+            <div class="paytable-heading"><span>3 SYMBOLE NA LINII</span><span>WYPŁATA BRUTTO / LINIA</span></div>
             <div class="paytable-payouts" id="slot-payouts" aria-label="Tabela wypłat"></div>
             <div class="bonus-rule"><span class="scatter-chip">SCATTER</span><span>3× SCATTER = 5 DARMOWYCH SPINÓW</span></div>
           </div>
+          <p class="payout-note">Stawka jest pobierana za każdą aktywną linię. Tabela pokazuje wypłatę brutto, baner pokazuje bilans netto po koszcie spinu.</p>
+          <p class="payout-note">Stawka jest pobierana za każdą aktywną linię. Baner pokazuje zysk netto po koszcie spinu.</p>
           <div class="payline-selector" id="payline-selector" role="group" aria-label="Wybierz aktywne linie wypłat">
             <span class="payline-selector-label">AKTYWNE LINIE</span>
             <div class="line-options">
@@ -175,7 +177,7 @@
             <label class="stake-control">STAWKA <span class="stake-input-wrap"><button class="stake-step" type="button" data-target="roulette-stake" data-delta="-10" aria-label="Zmniejsz stawkę">−</button><input id="roulette-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><button class="stake-step" type="button" data-target="roulette-stake" data-delta="10" aria-label="Zwiększ stawkę">+</button><span>pkt</span></span></label>
             <button class="primary-button" id="roulette-button" type="button"><span aria-hidden="true">↻</span> Zakręć kołem</button>
           </div>
-          <p class="game-message" id="roulette-message" aria-live="polite">Czerwony i czarny płacą 2×. Zielone zero płaci 14×.</p>
+          <p class="game-message" id="roulette-message" aria-live="polite">Mnożnik oznacza wypłatę brutto; baner pokazuje zysk netto po stawce.</p>
         </section>
 
         <section class="game-panel blackjack-panel" id="game-blackjack" role="tabpanel" aria-labelledby="tab-blackjack" data-panel="blackjack" hidden>
@@ -189,7 +191,7 @@
             <label class="stake-control">STAWKA <span class="stake-input-wrap"><button class="stake-step" type="button" data-target="blackjack-stake" data-delta="-10" aria-label="Zmniejsz stawkę">−</button><input id="blackjack-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><button class="stake-step" type="button" data-target="blackjack-stake" data-delta="10" aria-label="Zwiększ stawkę">+</button><span>pkt</span></span></label>
             <div class="blackjack-actions"><button class="secondary-button" id="hit-button" type="button" disabled>Dobierz</button><button class="secondary-button" id="stand-button" type="button" disabled>Pas</button><button class="primary-button" id="deal-button" type="button">Rozdaj</button></div>
           </div>
-          <p class="game-message" id="blackjack-message" aria-live="polite">Rozdaj karty, aby rozpocząć rundę. Wygrana płaci 2× stawkę.</p>
+          <p class="game-message" id="blackjack-message" aria-live="polite">Wypłata wynosi 2× stawkę, blackjack 2,5×. Baner pokazuje zysk netto.</p>
         </section>
 
         <section class="game-panel dice-panel" id="game-dice" role="tabpanel" aria-labelledby="tab-dice" data-panel="dice" hidden>
@@ -199,9 +201,9 @@
             <div class="dice-total"><strong id="dice-result">?</strong><span>SUMA</span></div>
           </div>
           <div class="dice-choices" role="group" aria-label="Wybierz wynik rzutu">
-            <button class="dice-choice is-selected" type="button" data-dice="low"><span>Niska</span><small>2–6 · 2×</small></button>
-            <button class="dice-choice" type="button" data-dice="seven"><span>Siódemka</span><small>dokładnie 7 · 5×</small></button>
-            <button class="dice-choice" type="button" data-dice="high"><span>Wysoka</span><small>8–12 · 2×</small></button>
+            <button class="dice-choice is-selected" type="button" data-dice="low"><span>Niska</span><small>2–6 · 2× brutto</small></button>
+            <button class="dice-choice" type="button" data-dice="seven"><span>Siódemka</span><small>dokładnie 7 · 5× brutto</small></button>
+            <button class="dice-choice" type="button" data-dice="high"><span>Wysoka</span><small>8–12 · 2× brutto</small></button>
           </div>
           <div class="game-controls">
             <label class="stake-control">STAWKA <span class="stake-input-wrap"><button class="stake-step" type="button" data-target="dice-stake" data-delta="-10" aria-label="Zmniejsz stawkę">−</button><input id="dice-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><button class="stake-step" type="button" data-target="dice-stake" data-delta="10" aria-label="Zwiększ stawkę">+</button><span>pkt</span></span></label>
@@ -221,7 +223,7 @@
             <label class="stake-control">STAWKA <span class="stake-input-wrap"><button class="stake-step" type="button" data-target="duel-stake" data-delta="-10" aria-label="Zmniejsz stawkę">−</button><input id="duel-stake" type="number" min="10" max="500" step="10" value="10" inputmode="numeric"><button class="stake-step" type="button" data-target="duel-stake" data-delta="10" aria-label="Zwiększ stawkę">+</button><span>pkt</span></span></label>
             <button class="primary-button" id="duel-button" type="button"><span aria-hidden="true">♦</span> Odkryj karty</button>
           </div>
-          <p class="game-message" id="duel-message" aria-live="polite">Wyższa karta wygrywa 2× stawkę. As jest najwyższy.</p>
+          <p class="game-message" id="duel-message" aria-live="polite">Wyższa karta: wypłata 2× brutto. Baner pokazuje zysk netto. As jest najwyższy.</p>
         </section>
 
         <section class="club-board" aria-label="Ranking i duże wygrane">

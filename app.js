@@ -145,6 +145,7 @@ function claimChestReward() {
   showWinBanner('SKRZYNKA BONUSOWA', `+ ${formatPoints(CHEST_REWARD)}`, 'pkt');
   showToast('Skrzynka otwarta! +10 000 pkt');
   announceBigWin(CHEST_REWARD, 'Skrzynka bonusowa');
+  announceBigWin(CHEST_REWARD, 'Skrzynka bonusowa');
 }
 
 function syncIncome() {
@@ -287,12 +288,15 @@ function announceBigWin(points, title) {
   }));
 }
 
-function awardPoints(points, title = 'WYGRANA') {
+function awardPoints(points, title = 'WYGRANA', netProfit = points) {
   state.points += points;
   saveState();
   renderBalance();
-  showWinBanner(title, `+ ${formatPoints(points)}`, 'pkt');
-  announceBigWin(points, title);
+  const bannerTitle = netProfit > 0 ? title : netProfit === 0 ? 'ZWROT STAWKI' : 'CZĘŚCIOWA WYPŁATA';
+  const sign = netProfit > 0 ? '+ ' : netProfit < 0 ? '− ' : '';
+  const resultLabel = netProfit > 0 ? 'ZYSK NETTO · PKT' : 'BILANS NETTO · PKT';
+  showWinBanner(bannerTitle, `${sign}${formatPoints(Math.abs(netProfit))}`, resultLabel);
+  announceBigWin(netProfit, title);
 }
 
 document.querySelectorAll('[data-game]').forEach((button) => {
@@ -360,15 +364,15 @@ const SLOT_SYMBOLS = {
 };
 
 const slotGames = {
-  sevens: createSlotGame('Lucky 777', 'LUCKY 777', 'TRAF 777 I ODBIERZ JACKPOT', ['seven', 'lemon', 'lemon', 'lemon', 'orange', 'orange', 'cherry', 'cherry', 'bell', 'bell', 'bar', 'scatter'], { seven: 120, lemon: 14, orange: 20, cherry: 30, bell: 40, bar: 100 }, 'Klasyczna linia 777 zgarnia 120× stawki.'),
-  fruits: createSlotGame('Owocowy klub', 'FRUIT CLUB', 'OWOCOWA LINIA CZEKA', ['cherry', 'cherry', 'cherry', 'lemon', 'lemon', 'orange', 'orange', 'grapes', 'grapes', 'bar', 'bell', 'scatter'], { cherry: 14, lemon: 22, orange: 26, grapes: 36, bar: 90, bell: 60 }, 'Klasyczne owoce i dzwonki. BAR wypłaca 90× stawki.'),
-  diamonds: createSlotGame('Diamentowy', 'DIAMOND VAULT', 'OTWÓRZ DIAMENTOWY SKARBIEC', ['diamond', 'diamond', 'ruby', 'ruby', 'ruby', 'seven', 'seven', 'bar', 'bar', 'bell', 'cherry', 'scatter'], { diamond: 28, ruby: 20, seven: 50, bar: 60, bell: 90, cherry: 100 }, 'Diamenty, siódemki i klasyczne symbole BAR.'),
-  pharaoh: createSlotGame('Skarb faraona', 'PHARAOH GOLD', 'ODKRYJ ZŁOTO FARAONÓW', ['scarab', 'scarab', 'scarab', 'crown', 'crown', 'amphora', 'amphora', 'ring', 'ring', 'bar', 'seven', 'scatter'], { scarab: 12, crown: 24, amphora: 32, ring: 40, bar: 75, seven: 120 }, 'Symbole skarbu i egipska linia 7 za 120× stawki.'),
-  midnight: createSlotGame('Nocny neon', 'MIDNIGHT NEON', 'ZŁAP NEONOWĄ SERIĘ', ['moon', 'moon', 'moon', 'lightning', 'lightning', 'diamond', 'diamond', 'bell', 'bell', 'bar', 'seven', 'scatter'], { moon: 14, lightning: 22, diamond: 30, bell: 44, bar: 90, seven: 150 }, 'Neonowa seria z najwyższą linią 7 za 150×.'),
-  royal: createSlotGame('Królewski dzwon', 'ROYAL BELLS', 'ZAGRAJ O KRÓLEWSKĄ LINIĘ', ['bell', 'bell', 'bell', 'cherry', 'cherry', 'crown', 'crown', 'seven', 'seven', 'bar', 'diamond', 'scatter'], { bell: 14, cherry: 20, crown: 32, seven: 45, bar: 100, diamond: 120 }, 'Królewskie symbole, dzwonki i diament za 120×.'),
-  ocean: createSlotGame('Skarby oceanu', 'OCEAN TREASURE', 'ODKRYJ SKARB POD FALAMI', ['shell', 'shell', 'shell', 'shell', 'fish', 'fish', 'coral', 'coral', 'anchor', 'bell', 'bar', 'scatter'], { shell: 4, fish: 6, coral: 8, anchor: 12, bell: 18, bar: 32 }, 'Trzy linie. Niższe mnożniki i częstsze trafienia.', 3),
-  wildwest: createSlotGame('Dziki Zachód', 'WILD WEST', 'ZŁAP ZŁOTĄ PODKOWĘ', ['magnet', 'magnet', 'magnet', 'magnet', 'cowboy', 'cowboy', 'cactus', 'cactus', 'star', 'bell', 'bar', 'scatter'], { magnet: 4, cowboy: 6, cactus: 8, star: 12, bell: 18, bar: 32 }, 'Trzy linie. Złap cztery częste symbole na linii.', 3),
-  cosmos: createSlotGame('Kosmiczny jackpot', 'COSMIC REELS', 'TRAF GWIEZDNĄ KONIUNKCJĘ', ['sunstar', 'sunstar', 'sunstar', 'sunstar', 'planet', 'planet', 'comet', 'comet', 'moon', 'diamond', 'bar', 'scatter'], { sunstar: 4, planet: 6, comet: 8, moon: 12, diamond: 18, bar: 32 }, 'Trzy linie i wyższa szansa na wygraną linię.', 3),
+  sevens: createSlotGame('Lucky 777', 'LUCKY 777', 'TRAF 777 I ODBIERZ JACKPOT', ['seven', 'lemon', 'lemon', 'lemon', 'lemon', 'orange', 'orange', 'cherry', 'cherry', 'bell', 'bell', 'bar', 'scatter'], { seven: 120, lemon: 14, orange: 20, cherry: 30, bell: 40, bar: 100 }, 'Klasyczna linia 777 zgarnia 120× stawki.'),
+  fruits: createSlotGame('Owocowy klub', 'FRUIT CLUB', 'OWOCOWA LINIA CZEKA', ['cherry', 'cherry', 'cherry', 'cherry', 'lemon', 'lemon', 'orange', 'orange', 'grapes', 'grapes', 'bar', 'bell', 'scatter'], { cherry: 14, lemon: 22, orange: 26, grapes: 36, bar: 90, bell: 60 }, 'Klasyczne owoce i dzwonki. BAR wypłaca 90× stawki.'),
+  diamonds: createSlotGame('Diamentowy', 'DIAMOND VAULT', 'OTWÓRZ DIAMENTOWY SKARBIEC', ['diamond', 'diamond', 'ruby', 'ruby', 'ruby', 'ruby', 'seven', 'seven', 'bar', 'bar', 'bell', 'cherry', 'scatter'], { diamond: 28, ruby: 20, seven: 50, bar: 60, bell: 90, cherry: 100 }, 'Diamenty, siódemki i klasyczne symbole BAR.'),
+  pharaoh: createSlotGame('Skarb faraona', 'PHARAOH GOLD', 'ODKRYJ ZŁOTO FARAONÓW', ['scarab', 'scarab', 'scarab', 'scarab', 'crown', 'crown', 'amphora', 'amphora', 'ring', 'ring', 'bar', 'seven', 'scatter'], { scarab: 12, crown: 24, amphora: 32, ring: 40, bar: 75, seven: 120 }, 'Symbole skarbu i egipska linia 7 za 120× stawki.'),
+  midnight: createSlotGame('Nocny neon', 'MIDNIGHT NEON', 'ZŁAP NEONOWĄ SERIĘ', ['moon', 'moon', 'moon', 'moon', 'lightning', 'lightning', 'diamond', 'diamond', 'bell', 'bell', 'bar', 'seven', 'scatter'], { moon: 14, lightning: 22, diamond: 30, bell: 44, bar: 90, seven: 150 }, 'Neonowa seria z najwyższą linią 7 za 150×.'),
+  royal: createSlotGame('Królewski dzwon', 'ROYAL BELLS', 'ZAGRAJ O KRÓLEWSKĄ LINIĘ', ['bell', 'bell', 'bell', 'bell', 'cherry', 'cherry', 'crown', 'crown', 'seven', 'seven', 'bar', 'diamond', 'scatter'], { bell: 14, cherry: 20, crown: 32, seven: 45, bar: 100, diamond: 120 }, 'Królewskie symbole, dzwonki i diament za 120×.'),
+  ocean: createSlotGame('Skarby oceanu', 'OCEAN TREASURE', 'ODKRYJ SKARB POD FALAMI', ['shell', 'shell', 'shell', 'shell', 'shell', 'fish', 'fish', 'coral', 'coral', 'anchor', 'bell', 'bar', 'scatter'], { shell: 4, fish: 6, coral: 8, anchor: 12, bell: 18, bar: 32 }, 'Trzy linie. Niższe mnożniki i częstsze trafienia.', 3),
+  wildwest: createSlotGame('Dziki Zachód', 'WILD WEST', 'ZŁAP ZŁOTĄ PODKOWĘ', ['magnet', 'magnet', 'magnet', 'magnet', 'magnet', 'cowboy', 'cowboy', 'cactus', 'cactus', 'star', 'bell', 'bar', 'scatter'], { magnet: 4, cowboy: 6, cactus: 8, star: 12, bell: 18, bar: 32 }, 'Trzy linie. Złap cztery częste symbole na linii.', 3),
+  cosmos: createSlotGame('Kosmiczny jackpot', 'COSMIC REELS', 'TRAF GWIEZDNĄ KONIUNKCJĘ', ['sunstar', 'sunstar', 'sunstar', 'sunstar', 'sunstar', 'planet', 'planet', 'comet', 'comet', 'moon', 'diamond', 'bar', 'scatter'], { sunstar: 4, planet: 6, comet: 8, moon: 12, diamond: 18, bar: 32 }, 'Trzy linie i wyższa szansa na wygraną linię.', 3),
 };
 let selectedSlot = 'sevens';
 let slotBusy = false;
@@ -579,9 +583,15 @@ document.querySelector('#spin-button').addEventListener('click', () => {
         });
       });
       const lineLabels = winningLines.map(({ line }) => line.name).join(', ');
-      awardPoints(totalPayout, `WYGRANA · LINIE ${lineLabels}`);
+      const netProfit = totalPayout - (isFreeSpin ? 0 : spinCost);
+      awardPoints(totalPayout, `LINIE ${lineLabels}`, netProfit);
       const bonusMessage = scatterCount >= 3 ? ` · +${game.freeSpinsAward} DARMOWYCH SPINÓW` : '';
-      setMessage('#slot-message', `LINIA ${lineLabels} · WYGRANA ${formatPoints(totalPayout)} PKT${bonusMessage}`, 'win');
+      const settlement = netProfit > 0
+        ? `ZYSK NETTO +${formatPoints(netProfit)} PKT · WYPŁATA BRUTTO ${formatPoints(totalPayout)} PKT`
+        : netProfit === 0
+          ? `ZWROT STAWKI · WYPŁATA BRUTTO ${formatPoints(totalPayout)} PKT`
+          : `WYPŁATA BRUTTO ${formatPoints(totalPayout)} PKT · BILANS SPINU −${formatPoints(Math.abs(netProfit))} PKT`;
+      setMessage('#slot-message', `LINIE ${lineLabels} · ${settlement}${bonusMessage}`, netProfit > 0 ? 'win' : netProfit < 0 ? 'loss' : '');
       winningLines.forEach(({ line }) => {
         document.querySelector(`.payline[data-payline-id="${line.id}"]`).classList.add('is-winning');
       });
@@ -643,8 +653,10 @@ document.querySelector('#roulette-button').addEventListener('click', (event) => 
     document.querySelector('#roulette-color').textContent = colorNames[color];
     if (color === selectedColor) {
       const multiplier = color === 'green' ? 14 : 2;
-      awardPoints(stake * multiplier);
-      setMessage('#roulette-message', `Trafiony ${colorNames[color].toLowerCase()}! Wygrywasz ${formatPoints(stake * multiplier)} pkt.`, 'win');
+      const grossPayout = stake * multiplier;
+      const netProfit = grossPayout - stake;
+      awardPoints(grossPayout, 'RULETKA', netProfit);
+      setMessage('#roulette-message', `Trafiony ${colorNames[color].toLowerCase()} · wypłata ${formatPoints(grossPayout)} pkt · zysk netto +${formatPoints(netProfit)} pkt.`, 'win');
     } else {
       setMessage('#roulette-message', `Wypadło ${number} — ${colorNames[color].toLowerCase()}. Spróbuj ponownie.`, 'loss');
     }
@@ -690,9 +702,9 @@ function renderBlackjack(hideDealerCard = blackjack.active) {
   document.querySelector('#deal-button').disabled = blackjack.active;
 }
 
-function finishBlackjack(message, result, payout = 0) {
+function finishBlackjack(message, result, payout = 0, netProfit = payout) {
   blackjack.active = false;
-  if (payout > 0) awardPoints(payout, result === 'win' ? 'BLACKJACK' : 'ZWROT STAWKI');
+  if (payout > 0) awardPoints(payout, result === 'win' ? 'BLACKJACK' : 'ZWROT STAWKI', netProfit);
   renderBlackjack(false);
   setMessage('#blackjack-message', message, result);
 }
@@ -706,8 +718,8 @@ document.querySelector('#deal-button').addEventListener('click', () => {
   const playerScore = handValue(blackjack.player);
   const dealerScore = handValue(blackjack.dealer);
   if (playerScore === 21 || dealerScore === 21) {
-    if (playerScore === dealerScore) finishBlackjack('Remis! Stawka wraca do Twojego portfela.', '', stake);
-    else if (playerScore === 21) finishBlackjack(`Blackjack! Wygrywasz ${formatPoints(stake * 2.5)} pkt.`, 'win', stake * 2.5);
+    if (playerScore === dealerScore) finishBlackjack('Remis. Stawka wraca do portfela.', '', stake, 0);
+    else if (playerScore === 21) finishBlackjack(`Blackjack! Wypłata brutto ${formatPoints(stake * 2.5)} pkt.`, 'win', stake * 2.5, stake * 1.5);
     else finishBlackjack('Krupier ma blackjacka. Tym razem wygrywa krupier.', 'loss');
   } else {
     setMessage('#blackjack-message', 'Dobierz kartę albo spasuj.');
@@ -729,8 +741,8 @@ document.querySelector('#stand-button').addEventListener('click', () => {
   while (handValue(blackjack.dealer) < 17) blackjack.dealer.push(drawCard());
   const playerScore = handValue(blackjack.player);
   const dealerScore = handValue(blackjack.dealer);
-  if (dealerScore > 21 || playerScore > dealerScore) finishBlackjack(`Wygrywasz ${formatPoints(blackjack.stake * 2)} pkt.`, 'win', blackjack.stake * 2);
-  else if (playerScore === dealerScore) finishBlackjack('Remis! Stawka wraca do Twojego portfela.', '', blackjack.stake);
+  if (dealerScore > 21 || playerScore > dealerScore) finishBlackjack(`Wypłata brutto ${formatPoints(blackjack.stake * 2)} pkt.`, 'win', blackjack.stake * 2, blackjack.stake);
+  else if (playerScore === dealerScore) finishBlackjack('Remis. Stawka wraca do portfela.', '', blackjack.stake, 0);
   else finishBlackjack(`Krupier ma ${dealerScore}. Tym razem wygrywa krupier.`, 'loss');
 });
 
@@ -768,8 +780,10 @@ document.querySelector('#dice-button').addEventListener('click', () => {
     const won = selectedDice === 'low' ? total < 7 : selectedDice === 'high' ? total > 7 : total === 7;
     if (won) {
       const multiplier = selectedDice === 'seven' ? 5 : 2;
-      awardPoints(stake * multiplier);
-      setMessage('#dice-message', `Wypadło ${total}! Wygrywasz ${formatPoints(stake * multiplier)} pkt.`, 'win');
+      const grossPayout = stake * multiplier;
+      const netProfit = grossPayout - stake;
+      awardPoints(grossPayout, 'KOŚCI', netProfit);
+      setMessage('#dice-message', `Wypadło ${total} · wypłata ${formatPoints(grossPayout)} pkt · zysk netto +${formatPoints(netProfit)} pkt.`, 'win');
     } else {
       setMessage('#dice-message', `Wypadło ${total}. Tym razem bez wygranej.`);
     }
@@ -809,10 +823,11 @@ document.querySelector('#duel-button').addEventListener('click', () => {
       element.textContent = `${card.label}${card.suit}`;
     });
     if (player.value > dealer.value) {
-      awardPoints(stake * 2);
-      setMessage('#duel-message', `Twoja karta ${player.label} bije ${dealer.label}. Wygrywasz ${formatPoints(stake * 2)} pkt.`, 'win');
+      const grossPayout = stake * 2;
+      awardPoints(grossPayout, 'POJEDYNEK KART', stake);
+      setMessage('#duel-message', `Twoja karta ${player.label} bije ${dealer.label} · wypłata ${formatPoints(grossPayout)} pkt · zysk netto +${formatPoints(stake)} pkt.`, 'win');
     } else if (player.value === dealer.value) {
-      awardPoints(stake, 'ZWROT STAWKI');
+      awardPoints(stake, 'ZWROT STAWKI', 0);
       setMessage('#duel-message', `Remis! ${player.label} kontra ${dealer.label}. Stawka wraca do portfela.`);
     } else {
       setMessage('#duel-message', `Krupier ma ${dealer.label}, a Ty ${player.label}. Następna runda?`, 'loss');
